@@ -16,6 +16,7 @@ import {
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view'
 import Icon from 'react-native-vector-icons/Ionicons'
 
+import Bookshelves from './home/bookshelves'
 import TabBar from '../weight/TabBar'
 import Search from './search'
 import config from '../common/config'
@@ -46,7 +47,7 @@ export default class Home extends Component {
           scrollWithoutAnimation={true}
           tabBarPosition={'bottom'}
           renderTabBar={() => <TabBar tabIcons={tabIcons} tabNames={tabNames}/>}>
-          <Text tabLabel="首页" navigator={this.props.navigator}>哈哈哈</Text>
+          <Bookshelves tabLabel="首页" navigator={this.props.navigator}>哈哈哈</Bookshelves>
           <Text tabLabel='发现' navigator={this.props.navigator} />
           <Text tabLabel='社区' navigator={this.props.navigator} />
           <Text tabLabel='我' navigator={this.props.navigator} />

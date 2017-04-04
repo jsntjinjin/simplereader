@@ -21,7 +21,7 @@ export default class TagsGroup extends Component {
 
   onClick(tag) {
     if (this.props.checkTag) {
-      console.log(tag)
+      console.log('当前点击的tag', tag)
       this.props.checkTag(tag)
     }
   }

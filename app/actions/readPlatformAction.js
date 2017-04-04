@@ -10,13 +10,13 @@ import * as types from '../common/actionType'
 import request from '../utils/httpUtil'
 import api from '../common/api'
 
-export let bookChapter = (id) => {
+export let bookChapter = (id, num) => {
   return dispatch => {
     return request.get(api.READ_BOOK_CHAPTER_LIST(id), null)
       .then((data) => {
         if(data.ok) {
           dispatch(getBookChapterSuccess(data.mixToc))
-          dispatch(chapterDetialFromNet(data.mixToc.chapters[0].link, 0))
+          dispatch(chapterDetialFromNet(data.mixToc.chapters[num].link, num))
         } else {
           dispatch(getBookChapterSuccess(null))
         }
@@ -35,12 +35,12 @@ export let chapterDetialFromNet = (chapterUrl, chapterNum) => {
         if(data.ok) {
           dispatch(getChapterDetialSuccess(data.chapter, chapterNum))
         } else {
-          dispatch(getBookChapterSuccess(null))
+          dispatch(getChapterDetialSuccess(null, chapterNum))
         }
       })
       .catch((err) => {
         console.log(err)
-        dispatch(getBookChapterSuccess(null))
+        dispatch(getChapterDetialSuccess(null, chapterNum))
       })
   }
 }

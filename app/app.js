@@ -14,9 +14,11 @@ import {
 } from 'react-native'
 
 import Storage from 'react-native-storage'
+import Realm from 'realm'
 
 import Splash from './components/splash'
 import config from './common/config'
+import schemaArray from './common/modelSchema'
 
 var storage = new Storage({
   // 最大容量，默认值1000条数据循环存储
@@ -42,6 +44,7 @@ var storage = new Storage({
 })
 
 global.storage = storage
+global.realm = new Realm({schema: schemaArray})
 
 export default class App extends Component {
   render() {

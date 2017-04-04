@@ -39,7 +39,9 @@ class ReadPlatform extends Component {
   componentDidMount() {
     const {dispatch} = this.props
     var bookId = this.props.bookId
-    dispatch(bookChapter(bookId))
+    let book = realm.objects('HistoryBook').filtered('bookId = "' + bookId + '"')
+    dispatch(bookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0))
+    this._updateHistoryBookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0)
   }
 
   _back() {
@@ -75,22 +77,40 @@ class ReadPlatform extends Component {
     }
   }
 
-  _lastChapter(oldChapterNum) {
+  _lastChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
-    let url = readPlatform.bookChapter.chapters[oldChapterNum - 1].link
-    dispatch(chapterDetialFromNet(url, oldChapterNum - 1))
+    let url = readPlatform.bookChapter.chapters[chapterNum - 1].link
+    dispatch(chapterDetialFromNet(url, chapterNum - 1))
+    this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum - 1)
   }
 
   _nowChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
-    let url = readPlatform.bookChapter.chapters[chapterNum].link
+    let url = readPlatform.bookChapter ? readPlatform.bookChapter.chapters[chapterNum].link : null
     dispatch(chapterDetialFromNet(url, chapterNum))
+    this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum)
   }
 
-  _nextChapter(oldChapterNum) {
+  _nextChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
-    let url = readPlatform.bookChapter.chapters[oldChapterNum + 1].link
-    dispatch(chapterDetialFromNet(url, oldChapterNum + 1))
+    let url = readPlatform.bookChapter.chapters[chapterNum + 1].link
+    dispatch(chapterDetialFromNet(url, chapterNum + 1))
+    this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum + 1)
+  }
+
+  _updateHistoryBookChapter(bookId, chapterNum){
+    var books = realm.objects('HistoryBook').sorted('sortNum')
+    var book = realm.objectForPrimaryKey('HistoryBook', bookId)
+    if (book) {
+      realm.write(() => {
+        if (book.bookId == books[books.length - 1].bookId) {
+          realm.create('HistoryBook', {bookId: book.bookId, historyChapterNum: chapterNum}, true)
+        } else {
+          var sortNum = books[books.length - 1].sortNum + 1
+          realm.create('HistoryBook', {bookId: book.bookId, sortNum: books[books.length - 1].sortNum + 1, historyChapterNum: chapterNum}, true)
+        }
+      })
+    }
   }
 
   render() {

@@ -31,6 +31,7 @@ export default class BookDetial extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      hasSaveBook: false,
       longInTroLineNumber: 2,
       bookDetial: '',
       hotReview: [],
@@ -39,15 +40,16 @@ export default class BookDetial extends Component {
   }
 
   componentDidMount() {
-    var array = this.props.navigator.getCurrentRoutes();
-    array.forEach(function(element) {
-      console.log(element)
-    }, this);
-    const {dispatch} = this.props
+    // var array = this.props.navigator.getCurrentRoutes();
+    // array.forEach(function(element) {
+    //   console.log(element)
+    // }, this);
+    // const {dispatch} = this.props
     var bookId = this.props.bookId
     this._getBookDetial(bookId)
     this._getHotReview(bookId)
     this._getRecommendBookList(bookId)
+    this.hasSaveBook(bookId)
   }
 
   _getBookDetial(bookId) {
@@ -92,10 +94,60 @@ export default class BookDetial extends Component {
   }
 
   /**
+   * 是否已经保存过当前书籍
+   * @param {string} bookId 书籍id
+   */
+  hasSaveBook(bookId) {
+    var book = realm.objectForPrimaryKey('HistoryBook', bookId)
+    this.setState({hasSaveBook: book ? book.isToShow : false})
+    console.log('是否已经保存过当前书籍', book ? book.isToShow : false)
+  }
+
+  /**
+   * 向数据库中保存当前书籍的记录
+   */
+  saveBookToRealm(bookDetial) {
+    var books = realm.objects('HistoryBook').sorted('sortNum')
+    var book = realm.objectForPrimaryKey('HistoryBook', bookDetial._id)
+    realm.write(() => {
+      if(book) {
+        realm.create('HistoryBook', {bookId: bookDetial._id, isToShow: true}, true)
+      } else {
+        realm.create('HistoryBook', {
+          bookId: bookDetial._id,
+          bookName: bookDetial.title,
+          bookUrl: bookDetial.cover,
+          lastChapterTitle: bookDetial.lastChapter,
+          historyChapterNum: 0,
+          lastChapterTime: bookDetial.updated,
+          saveTime: new Date(),
+          sortNum: books && books.length > 0 ? books[books.length - 1].sortNum + 1 : 0,
+          isToShow: true
+        });
+      }
+    })
+  }
+
+  /**
+   * 从数据库中删除当前书籍的记录
+   */
+  deleteBookToRealm(bookDetial) {
+    let book = realm.objectForPrimaryKey('HistoryBook', bookDetial._id)
+    realm.write(() => {
+      realm.create('HistoryBook', {bookId: bookDetial._id, isToShow: false}, true)
+    })
+  }
+
+  /**
    * 添加或删除数据库中相关书籍
    */
-  _addOrDeleteBook() {
-
+  _addOrDeleteBook(bookDetial) {
+    if (this.state.hasSaveBook) {
+      this.deleteBookToRealm(bookDetial)
+    } else {
+      this.saveBookToRealm(bookDetial)
+    }
+    this.hasSaveBook(bookDetial._id)
   }
 
   /**
@@ -264,13 +316,21 @@ export default class BookDetial extends Component {
             </View>
           </View>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginLeft: 14, marginRight: 14}}>
-            <TouchableOpacity style={styles.button1} onPress={() => this._addOrDeleteBook()}>
-              <Icon
-                name='ios-add-outline'
-                style={styles.buttonIcon}
-                size={15}
-                color={config.css.color.appBackground} />
-              <Text style={styles.buttonText}>追更新</Text>
+            <TouchableOpacity style={this.state.hasSaveBook ? [styles.button1, {backgroundColor: config.css.color.line}] : styles.button1} onPress={() => this._addOrDeleteBook(this.state.bookDetial)}>
+              {this.state.hasSaveBook ?
+                <Icon
+                  name='ios-remove-outline'
+                  style={styles.buttonIcon}
+                  size={15}
+                  color={config.css.color.appBackground} />
+              :
+                <Icon
+                  name='ios-add-outline'
+                  style={styles.buttonIcon}
+                  size={15}
+                  color={config.css.color.appBackground} />
+              }
+              <Text style={styles.buttonText}>{this.state.hasSaveBook ? '不追了' : '追更新'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button2} onPress={() => this._readBook(this.state.bookDetial)}>
               <Icon
@@ -415,7 +475,6 @@ const styles = StyleSheet.create({
   bookDataNumber: {
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.title,
-    alignSelf: 'center',
     marginLeft: 14,
     marginRight: 14
   },

@@ -12,7 +12,8 @@ import {
   TextInput,
   StyleSheet,
   ListView,
-  TouchableOpacity
+  TouchableOpacity,
+  ScrollView
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -23,8 +24,6 @@ import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'
 import config from '../common/config'
 import BookDetail from './bookDetail'
-
-var boxColorIndex = 0
 
 export default class Search extends Component {
 
@@ -38,6 +37,7 @@ export default class Search extends Component {
       autoComplete: ds.cloneWithRows([]),
       hotPart: 0,
       hotWords: ds.cloneWithRows([]),
+      hotWordsPart: ds.cloneWithRows([]),
       searchHistory: ds.cloneWithRows([])
     }
   }
@@ -56,6 +56,7 @@ export default class Search extends Component {
       .then((data) => {
         if(data.ok) {
           this.setState({hotWords: data.hotWords})
+          this._refreshHotWord()
         }
       })
   }
@@ -95,20 +96,22 @@ export default class Search extends Component {
    * @param {string} text 输入的书名
    */
   _submit(text) {
-    this._storageSaveSearchHistory(text)
-    request.get(api.SEARCH_BOOKS, {query: text})
-      .then((data) => {
-        if(data.ok){
-          this.setState({
-            searchData: this.state.searchData.cloneWithRows(data.books),
-            searchState: true,
-            autoComplete: this.state.autoComplete.cloneWithRows([])
-          })
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    if(text) {
+      this._storageSaveSearchHistory(text)
+      request.get(api.SEARCH_BOOKS, {query: text})
+        .then((data) => {
+          if(data.ok){
+            this.setState({
+              searchData: this.state.searchData.cloneWithRows(data.books),
+              searchState: true,
+              autoComplete: this.state.autoComplete.cloneWithRows([])
+            })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
   }
 
   __storageSelectSearchHistory() {
@@ -189,7 +192,13 @@ export default class Search extends Component {
 
   _refreshHotWord() {
     var part = (this.state.hotPart + 1) % 4
-    this.setState({hotPart: part})
+    var words = []
+    if (8 * (part + 1) < this.state.hotWords.length) {
+      words = this.state.hotWords.slice(8 * part, 8 * (part + 1))
+    } else {
+      words = this.state.hotWords.slice(8 * part)
+    }
+    this.setState({hotPart: part, hotWordsPart: words})
   }
 
   _back() {
@@ -272,7 +281,7 @@ export default class Search extends Component {
             onChangeText={(text) => this._searchAutoComplete(text)}
             onSubmitEditing={(event) => this._submit(event.nativeEvent.text)}/>
         </View>
-        <View style={styles.body}>
+        <ScrollView style={styles.body}>
           {this.state.searchState ? 
             // 显示搜索结果
             <ListView 
@@ -297,7 +306,7 @@ export default class Search extends Component {
                   换一批
                 </Text>
               </View>
-              <TagsGroup tags={this.state.hotWords} checkTag={(tag) => this._changeSearchWord(tag)}/>
+              <TagsGroup tags={this.state.hotWordsPart} checkTag={(tag) => this._changeSearchWord(tag)}/>
               <View style={styles.hotWordsHeader}>
                 <Text style={styles.hotWordsHeaderText}>搜索历史</Text>
                 <Icon
@@ -314,7 +323,6 @@ export default class Search extends Component {
                 </Text>
               </View>
               <ListView
-                style={{height: 300}}
                 enableEmptySections={true}
                 dataSource={this.state.searchHistory}
                 renderRow={this.renderSearchHistory.bind(this)}/>
@@ -329,7 +337,7 @@ export default class Search extends Component {
           : 
             null 
           }
-        </View>
+        </ScrollView>
      </View> 
     )
   }
@@ -412,23 +420,6 @@ const styles = StyleSheet.create({
   hotWordsHeaderText: {
     flex: 1,
     fontSize: config.css.fontSize.desc
-  },
-  hotWordsBody: {
-    marginLeft: 14,
-    marginRight: 14,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start'
-  },
-  hotWordsText: {
-    alignSelf: 'center',
-    margin: 5,
-    color: config.css.color.appBlack,
-    paddingLeft: 5,
-    paddingRight: 5,
-    paddingTop: 2,
-    paddingBottom: 2,
-    backgroundColor: config.css.boxColor[boxColorIndex]
   },
   historyItem: {
     height: 30, 
