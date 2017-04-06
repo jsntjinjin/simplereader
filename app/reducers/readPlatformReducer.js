@@ -10,7 +10,7 @@ import * as types from '../common/actionType'
 
 const initialState = {
   bookChapter: null,
-  chapterDetial: null,
+  chapterDetail: null,
   chapterNum: 0
 }
 
@@ -20,9 +20,9 @@ export default function readPlatform(state = initialState, action) {
       return Object.assign({}, state, {
         bookChapter: action.mixToc
       })
-    case types.READ_BOOK_CHAPTER_DETIAL:
+    case types.READ_BOOK_CHAPTER_DETAIL:
       return Object.assign({}, state, {
-        chapterDetial: action.chapterDetial,
+        chapterDetail: action.chapterDetail,
         chapterNum: action.chapterNum
       })
     // case types.BOOK_HOT_REVIEW:

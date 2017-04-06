@@ -1,5 +1,5 @@
 /*
- * description: the detial of book
+ * description: the detail of book
  * author: 麦芽糖
  * time: 2017年03月15日10:26:53
  */
@@ -26,14 +26,14 @@ import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'
 import config from '../common/config'
 
-export default class BookDetial extends Component {
+export default class BookDetail extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
       hasSaveBook: false,
       longInTroLineNumber: 2,
-      bookDetial: '',
+      bookDetail: '',
       hotReview: [],
       recommendBookList: []
     }
@@ -46,20 +46,20 @@ export default class BookDetial extends Component {
     // }, this);
     // const {dispatch} = this.props
     var bookId = this.props.bookId
-    this._getBookDetial(bookId)
+    this._getBookDetail(bookId)
     this._getHotReview(bookId)
     this._getRecommendBookList(bookId)
     this.hasSaveBook(bookId)
   }
 
-  _getBookDetial(bookId) {
-    request.get(api.BOOK_DETIAL(bookId), null)
+  _getBookDetail(bookId) {
+    request.get(api.BOOK_DETAIL(bookId), null)
       .then((data) => {
-        this.setState({bookDetial: data})
+        this.setState({bookDetail: data})
       })
       .catch((err) => {
         console.log(err)
-        this.setState({bookDetial: null})
+        this.setState({bookDetail: null})
       })
   }
 
@@ -106,20 +106,20 @@ export default class BookDetial extends Component {
   /**
    * 向数据库中保存当前书籍的记录
    */
-  saveBookToRealm(bookDetial) {
+  saveBookToRealm(bookDetail) {
     var books = realm.objects('HistoryBook').sorted('sortNum')
-    var book = realm.objectForPrimaryKey('HistoryBook', bookDetial._id)
+    var book = realm.objectForPrimaryKey('HistoryBook', bookDetail._id)
     realm.write(() => {
       if(book) {
-        realm.create('HistoryBook', {bookId: bookDetial._id, isToShow: true}, true)
+        realm.create('HistoryBook', {bookId: bookDetail._id, isToShow: true}, true)
       } else {
         realm.create('HistoryBook', {
-          bookId: bookDetial._id,
-          bookName: bookDetial.title,
-          bookUrl: bookDetial.cover,
-          lastChapterTitle: bookDetial.lastChapter,
+          bookId: bookDetail._id,
+          bookName: bookDetail.title,
+          bookUrl: bookDetail.cover,
+          lastChapterTitle: bookDetail.lastChapter,
           historyChapterNum: 0,
-          lastChapterTime: bookDetial.updated,
+          lastChapterTime: bookDetail.updated,
           saveTime: new Date(),
           sortNum: books && books.length > 0 ? books[books.length - 1].sortNum + 1 : 0,
           isToShow: true
@@ -131,23 +131,23 @@ export default class BookDetial extends Component {
   /**
    * 从数据库中删除当前书籍的记录
    */
-  deleteBookToRealm(bookDetial) {
-    let book = realm.objectForPrimaryKey('HistoryBook', bookDetial._id)
+  deleteBookToRealm(bookDetail) {
+    let book = realm.objectForPrimaryKey('HistoryBook', bookDetail._id)
     realm.write(() => {
-      realm.create('HistoryBook', {bookId: bookDetial._id, isToShow: false}, true)
+      realm.create('HistoryBook', {bookId: bookDetail._id, isToShow: false}, true)
     })
   }
 
   /**
    * 添加或删除数据库中相关书籍
    */
-  _addOrDeleteBook(bookDetial) {
+  _addOrDeleteBook(bookDetail) {
     if (this.state.hasSaveBook) {
-      this.deleteBookToRealm(bookDetial)
+      this.deleteBookToRealm(bookDetail)
     } else {
-      this.saveBookToRealm(bookDetial)
+      this.saveBookToRealm(bookDetail)
     }
-    this.hasSaveBook(bookDetial._id)
+    this.hasSaveBook(bookDetail._id)
   }
 
   /**
@@ -158,7 +158,7 @@ export default class BookDetial extends Component {
       name: 'readPlatform',
         component: ReadPlatform,
         params: {
-          bookId: this.state.bookDetial._id
+          bookId: this.state.bookDetail._id
         }
     })
   }
@@ -190,7 +190,7 @@ export default class BookDetial extends Component {
    * 进入书评详情界面
    * @param {string} key 热门书评id
    */
-  _reviewDetial(key) {
+  _reviewDetail(key) {
     console.log(this.state.hotReview[key]._id)
   }
 
@@ -198,7 +198,7 @@ export default class BookDetial extends Component {
    * 进入书籍社区
    */
   _toBookCommunity() {
-    console.log(this.state.bookDetial._id)
+    console.log(this.state.bookDetail._id)
   }
 
   /**
@@ -222,7 +222,7 @@ export default class BookDetial extends Component {
           <TouchableOpacity 
             activeOpacity={0.5}
             style={{flex: 1, width: Dimen.window.width - 68, flexDirection: 'row', marginLeft: 14, marginRight: 14}} 
-            onPress={this._reviewDetial.bind(this, i)}
+            onPress={this._reviewDetail.bind(this, i)}
             key={i}>
             <Image 
               style={styles.hotReviewImage}
@@ -297,26 +297,26 @@ export default class BookDetial extends Component {
         <ScrollView 
           style={styles.body}
           showsVerticalScrollIndicator={false}>
-          <View style={styles.bookDetial}>
+          <View style={styles.bookDetail}>
             <Image 
-              style={styles.bookDetialImage}
-              source={this.state.bookDetial.cover
-                ? {uri: (api.IMG_BASE_URL + this.state.bookDetial.cover)} 
+              style={styles.bookDetailImage}
+              source={this.state.bookDetail.cover
+                ? {uri: (api.IMG_BASE_URL + this.state.bookDetail.cover)} 
                 : require('../imgs/splash.jpg')}/>
             <View style={{justifyContent: 'space-around'}}>
-              <Text style={{color: config.css.fontColor.title, fontSize: config.css.fontSize.title}}>{this.state.bookDetial.title}</Text>
+              <Text style={{color: config.css.fontColor.title, fontSize: config.css.fontSize.title}}>{this.state.bookDetail.title}</Text>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.bookDetialAuthor}>{this.state.bookDetial.author}</Text>
-                <Text style={styles.bookDetialMidText}> | </Text>
-                <Text style={styles.bookDetialMidText}>{this.state.bookDetial.minorCate}</Text>
-                <Text style={styles.bookDetialMidText}> | </Text>
-                <Text style={styles.bookDetialMidText}>{this.state.bookDetial.wordCount + '字'}</Text>
+                <Text style={styles.bookDetailAuthor}>{this.state.bookDetail.author}</Text>
+                <Text style={styles.bookDetailMidText}> | </Text>
+                <Text style={styles.bookDetailMidText}>{this.state.bookDetail.minorCate}</Text>
+                <Text style={styles.bookDetailMidText}> | </Text>
+                <Text style={styles.bookDetailMidText}>{this.state.bookDetail.wordCount + '字'}</Text>
               </View>
-              <Text style={styles.bookDetialMidText}>{'更新时间: ' + this.state.bookDetial.updated}</Text>
+              <Text style={styles.bookDetailMidText}>{'更新时间: ' + this.state.bookDetail.updated}</Text>
             </View>
           </View>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginLeft: 14, marginRight: 14}}>
-            <TouchableOpacity style={this.state.hasSaveBook ? [styles.button1, {backgroundColor: config.css.color.line}] : styles.button1} onPress={() => this._addOrDeleteBook(this.state.bookDetial)}>
+            <TouchableOpacity style={this.state.hasSaveBook ? [styles.button1, {backgroundColor: config.css.color.line}] : styles.button1} onPress={() => this._addOrDeleteBook(this.state.bookDetail)}>
               {this.state.hasSaveBook ?
                 <Icon
                   name='ios-remove-outline'
@@ -332,7 +332,7 @@ export default class BookDetial extends Component {
               }
               <Text style={styles.buttonText}>{this.state.hasSaveBook ? '不追了' : '追更新'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button2} onPress={() => this._readBook(this.state.bookDetial)}>
+            <TouchableOpacity style={styles.button2} onPress={() => this._readBook(this.state.bookDetail)}>
               <Icon
                 name='ios-book-outline'
                 style={styles.buttonIcon}
@@ -345,21 +345,21 @@ export default class BookDetial extends Component {
           <View style={{flex: 1,flexDirection: 'row',justifyContent: 'space-around'}}>
             <View style={styles.bookData}>
               <Text style={styles.bookDataTitle}>追书人数</Text>
-              <Text style={styles.bookDataNumber}>{this.state.bookDetial.latelyFollower}</Text>
+              <Text style={styles.bookDataNumber}>{this.state.bookDetail.latelyFollower}</Text>
             </View>
             <View style={styles.bookData}>
               <Text style={styles.bookDataTitle}>读者留存率</Text>
-              <Text style={styles.bookDataNumber}>{this.state.bookDetial.retentionRatio + '%'}</Text>
+              <Text style={styles.bookDataNumber}>{this.state.bookDetail.retentionRatio + '%'}</Text>
             </View>
             <View style={styles.bookData}>
               <Text style={styles.bookDataTitle}>日更新字数</Text>
-              <Text style={styles.bookDataNumber}>{this.state.bookDetial.serializeWordCount}</Text>
+              <Text style={styles.bookDataNumber}>{this.state.bookDetail.serializeWordCount}</Text>
             </View>
           </View>
           <View style={styles.line}/>
-          <TagsGroup tags={this.state.bookDetial.tags} checkTag={(tag) => this._checkTag(tag)}/>
+          <TagsGroup tags={this.state.bookDetail.tags} checkTag={(tag) => this._checkTag(tag)}/>
           <View style={styles.line}/>
-          <Text style={styles.bookDataNumber} numberOfLines={this.state.longInTroLineNumber} onPress={this._showLongInTro.bind(this)}>{this.state.bookDetial.longIntro}</Text>
+          <Text style={styles.bookDataNumber} numberOfLines={this.state.longInTroLineNumber} onPress={this._showLongInTro.bind(this)}>{this.state.bookDetail.longIntro}</Text>
           <View style={styles.hightLine}/>
           <View style={styles.bookHotReviewHeader}>
             <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>热门书评</Text>
@@ -374,8 +374,8 @@ export default class BookDetial extends Component {
             onPress={this._toBookCommunity.bind(this)}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginLeft: 14, marginRight: 14}}>
               <View>
-                <Text style={{fontSize: config.css.fontSize.title, color: config.css.fontColor.title, marginBottom: 10}}>{this.state.bookDetial.title + '的社区'}</Text>
-                <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>{'共有' + this.state.bookDetial.postCount + '个帖子'}</Text>
+                <Text style={{fontSize: config.css.fontSize.title, color: config.css.fontColor.title, marginBottom: 10}}>{this.state.bookDetail.title + '的社区'}</Text>
+                <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>{'共有' + this.state.bookDetail.postCount + '个帖子'}</Text>
               </View>
               <Icon 
                 name='ios-arrow-forward-outline'
@@ -419,21 +419,21 @@ const styles = StyleSheet.create({
   body: {
     flex: 1
   },
-  bookDetial: {
+  bookDetail: {
     flexDirection: 'row',
     margin: 14
   },
-  bookDetialImage: {
+  bookDetailImage: {
     marginRight: 14,
     alignSelf: 'center',
     width: 60,
     height: 90
   },
-  bookDetialMidText: {
+  bookDetailMidText: {
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.desc,
   },
-  bookDetialAuthor: {
+  bookDetailAuthor: {
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.appMainColor,
   },

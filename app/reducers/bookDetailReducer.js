@@ -1,5 +1,5 @@
 /*
- * description: the reducer for bookDetial
+ * description: the reducer for bookDetail
  * author: 麦芽糖
  * time: 2017年03月18日14:21:55
  */
@@ -15,13 +15,13 @@ const initialState = {
   recommendBookList: []
 }
 
-export default function bookDetial(state = initialState, action) {
+export default function bookDetail(state = initialState, action) {
   switch (action.type) {
-    case types.BOOK_DETIAL_LOADING:
+    case types.BOOK_DETAIL_LOADING:
       return Object.assign({}, state, {
         isLoading: action.isLoading
       })
-    case types.BOOK_DETIAL:
+    case types.BOOK_DETAIL:
       return Object.assign({}, state, {
         isLoading: action.isLoading,
         data: action.data

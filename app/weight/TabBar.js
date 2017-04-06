@@ -3,15 +3,15 @@
  * Songlcy create by 2017-01-16
  */
 
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet
-} from 'react-native';
+} from 'react-native'
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 import Dimen from '../utils/dimensionsUtil'
 

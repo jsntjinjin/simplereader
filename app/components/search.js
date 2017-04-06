@@ -168,7 +168,7 @@ export default class Search extends Component {
    * 跳转书的介绍页面
    * @param {string} rowData 书的信息
    */
-  _startReadDetial(rowData) {
+  _startReadDetail(rowData) {
     this.props.navigator.push({
       name: 'bookDetail',
       component: BookDetail,
@@ -224,7 +224,7 @@ export default class Search extends Component {
     return (
       <TouchableOpacity 
         activeOpacity={0.5}
-        onPress={() => this._startReadDetial(rowData)}>
+        onPress={() => this._startReadDetail(rowData)}>
         <View style={styles.item}>
           <Image 
             style={styles.itemImage}

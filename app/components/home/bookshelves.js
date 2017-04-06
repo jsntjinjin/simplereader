@@ -1,5 +1,5 @@
 /*
- * description: 书架
+ * description: 书架tab
  * author: 麦芽糖
  * time: 2017年04月04日17:08:01
  */
@@ -10,6 +10,7 @@ import {
   ListView,
   TouchableOpacity,
   View,
+  ScrollView,
   Image,
   Text
 } from 'react-native'
@@ -78,7 +79,7 @@ export default class Bookshelves extends Component {
 
   render() {
     return (
-      <View>
+      <ScrollView>
         {this.state.bookshelves ? 
           <ListView
             enableEmptySections={true}
@@ -87,7 +88,7 @@ export default class Bookshelves extends Component {
           : 
           <Text style={{alignSelf: 'center'}}>您还没有收藏过任何书籍哦~~</Text>
         }
-      </View>
+      </ScrollView>
     )
   }
 }

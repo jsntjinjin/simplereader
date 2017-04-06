@@ -1,5 +1,5 @@
 /*
- * description: the actions for bookDetial
+ * description: the actions for bookDetail
  * author: 麦芽糖
  * time: 2017年03月18日14:02:11
  */
@@ -10,16 +10,16 @@ import * as types from '../common/actionType'
 import request from '../utils/httpUtil'
 import api from '../common/api'
 
-export let bookDetial = (id) => {
+export let bookDetail = (id) => {
   return dispatch => {
-    dispatch(loadingBookDetial())
-    return request.get(api.BOOK_DETIAL(id), null)
+    dispatch(loadingBookDetail())
+    return request.get(api.BOOK_DETAIL(id), null)
       .then((data) => {
-        dispatch(getBookDetialSuccess(data))
+        dispatch(getBookDetailSuccess(data))
       })
       .catch((err) => {
         console.log(err)
-        dispatch(getBookDetialSuccess(null))
+        dispatch(getBookDetailSuccess(null))
       })
   }
 }
@@ -58,17 +58,17 @@ export let recommendBookList = (id, limit) => {
   }
 }
 
-let getBookDetialSuccess = (data) => {
+let getBookDetailSuccess = (data) => {
   return {
-    type: types.BOOK_DETIAL,
+    type: types.BOOK_DETAIL,
     isLoading: false,
     data: data
   }
 }
 
-let loadingBookDetial = () => {
+let loadingBookDetail = () => {
   return {
-    type: types.BOOK_DETIAL_LOADING,
+    type: types.BOOK_DETAIL_LOADING,
     isLoading: true
   }
 }

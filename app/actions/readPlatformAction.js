@@ -16,7 +16,7 @@ export let bookChapter = (id, num) => {
       .then((data) => {
         if(data.ok) {
           dispatch(getBookChapterSuccess(data.mixToc))
-          dispatch(chapterDetialFromNet(data.mixToc.chapters[num].link, num))
+          dispatch(chapterDetailFromNet(data.mixToc.chapters[num].link, num))
         } else {
           dispatch(getBookChapterSuccess(null))
         }
@@ -28,19 +28,19 @@ export let bookChapter = (id, num) => {
   }
 }
 
-export let chapterDetialFromNet = (chapterUrl, chapterNum) => {
+export let chapterDetailFromNet = (chapterUrl, chapterNum) => {
   return dispatch => {
-    return request.get(api.READ_BOOK_CHAPTER_DETIAL(chapterUrl), null)
+    return request.get(api.READ_BOOK_CHAPTER_DETAIL(chapterUrl), null)
       .then((data) => {
         if(data.ok) {
-          dispatch(getChapterDetialSuccess(data.chapter, chapterNum))
+          dispatch(getChapterDetailSuccess(data.chapter, chapterNum))
         } else {
-          dispatch(getChapterDetialSuccess(null, chapterNum))
+          dispatch(getChapterDetailSuccess(null, chapterNum))
         }
       })
       .catch((err) => {
         console.log(err)
-        dispatch(getChapterDetialSuccess(null, chapterNum))
+        dispatch(getChapterDetailSuccess(null, chapterNum))
       })
   }
 }
@@ -52,11 +52,11 @@ let getBookChapterSuccess = (mixToc) => {
   }
 }
 
-let getChapterDetialSuccess = (chapterDetial, chapterNum) => {
-  chapterDetial.body = '        ' + chapterDetial.body.replace(/\n/g, '\n        ')
+let getChapterDetailSuccess = (chapterDetail, chapterNum) => {
+  chapterDetail.body = '        ' + chapterDetail.body.replace(/\n/g, '\n        ')
   return {
-    type: types.READ_BOOK_CHAPTER_DETIAL,
-    chapterDetial: chapterDetial,
+    type: types.READ_BOOK_CHAPTER_DETAIL,
+    chapterDetail: chapterDetail,
     chapterNum: chapterNum
   }
 }

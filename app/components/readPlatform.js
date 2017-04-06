@@ -25,7 +25,7 @@ import request from '../utils/httpUtil'
 import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'
 import config from '../common/config'
-import {bookChapter, chapterDetialFromNet}from '../actions/readPlatformAction'
+import {bookChapter, chapterDetailFromNet}from '../actions/readPlatformAction'
 
 class ReadPlatform extends Component {
 
@@ -57,7 +57,7 @@ class ReadPlatform extends Component {
   /**
    * 进入书籍详情界面
    */
-  _toBookDetial() {
+  _toBookDetail() {
     const {readPlatform} = this.props
     this.props.navigator.push({
       name: 'bookDetail',
@@ -80,21 +80,21 @@ class ReadPlatform extends Component {
   _lastChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
     let url = readPlatform.bookChapter.chapters[chapterNum - 1].link
-    dispatch(chapterDetialFromNet(url, chapterNum - 1))
+    dispatch(chapterDetailFromNet(url, chapterNum - 1))
     this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum - 1)
   }
 
   _nowChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
     let url = readPlatform.bookChapter ? readPlatform.bookChapter.chapters[chapterNum].link : null
-    dispatch(chapterDetialFromNet(url, chapterNum))
+    dispatch(chapterDetailFromNet(url, chapterNum))
     this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum)
   }
 
   _nextChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
     let url = readPlatform.bookChapter.chapters[chapterNum + 1].link
-    dispatch(chapterDetialFromNet(url, chapterNum + 1))
+    dispatch(chapterDetailFromNet(url, chapterNum + 1))
     this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum + 1)
   }
 
@@ -123,18 +123,18 @@ class ReadPlatform extends Component {
           showHideTransition={'slide'}
           barStyle={'light-content'}/>
         <Image source={require('../imgs/read_bg.jpg')} style={{width: Dimen.window.width, height: Dimen.window.height}}>
-          {readPlatform.chapterDetial ?
+          {readPlatform.chapterDetail ?
             <ScrollView
               onContentSizeChange={() => this._scrollView.scrollTo({x: 0, y: 0, animated: false})}
               ref={(ref) => this._scrollView = ref}
               style={{flex: 1}}
               showsVerticalScrollIndicator={false}>
-              <Text style={styles.textTitle}>{readPlatform.chapterDetial.title}</Text>
+              <Text style={styles.textTitle}>{readPlatform.chapterDetail.title}</Text>
               <Text 
                 onStartShouldSetResponder={() => true}
                 onResponderRelease={(evt) => {this._showControlStation(evt)}}
                 style={styles.textBody}>
-                {readPlatform.chapterDetial.body}
+                {readPlatform.chapterDetail.body}
               </Text>
               <View style={{height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 {readPlatform.chapterNum != 0 ?
@@ -183,7 +183,7 @@ class ReadPlatform extends Component {
                 color={config.css.color.appBlack}
                 onPress={this._back.bind(this)}/>
               <Text style={styles.controlHeaderTitle} onPress={this._toBookCommunity.bind(this)}>社区</Text>
-              <Text style={styles.controlHeaderTitle} onPress={this._toBookDetial.bind(this)}>简介</Text>
+              <Text style={styles.controlHeaderTitle} onPress={this._toBookDetail.bind(this)}>简介</Text>
             </View>
             <View 
               onStartShouldSetResponder={() => true}
