@@ -9,10 +9,12 @@
 import {combineReducers} from 'redux'
 import readPlatform from './readPlatformReducer'
 import charts from './chartsReducer'
+import bookList from './bookListReducer'
 
 const rootReducer = combineReducers({
   readPlatform,
-  charts
+  charts,
+  bookList
 })
 
 export default rootReducer

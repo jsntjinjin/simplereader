@@ -1,5 +1,5 @@
 /*
- * description: the action for charts
+ * description: the action for charts, chartsDetail
  * author: 麦芽糖
  * time: 2017年04月05日21:02:12
  */

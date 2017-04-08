@@ -14,7 +14,7 @@ import {
 import CommonItemForTab from '../../weight/commonItemForTab'
 import ReadPlatform from '../readPlatform'
 import Charts from '../discover/charts'
-import ThemeBookList from '../discover/themeBookList'
+import BookList from '../discover/bookList'
 import Classify from '../discover/classify'
 import config from '../../common/config'
 
@@ -42,8 +42,8 @@ export default class Discover extends Component {
    */
   _goToThemeBookList() {
     this.props.navigator.push({
-      name: 'themeBookList',
-      component: ThemeBookList
+      name: 'bookList',
+      component: BookList
     })
   }
 

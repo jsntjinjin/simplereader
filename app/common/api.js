@@ -37,12 +37,25 @@ module.exports = {
   // discover
   // GET 排行榜
   DISCOVER_CHARTS: API_BASE_URL + '/ranking/gender',
-  // GET 通过id获取排行榜详情 
-  // http://api.zhuishushenqi.com/ranking/564d820bc319238a644fb408
-  // 周榜：rankingId->_id
-  // 月榜：rankingId->monthRank
-  // 总榜：rankingId->totalRank
+  /**  
+   * GET 通过id获取排行榜详情 
+   * http://api.zhuishushenqi.com/ranking/564d820bc319238a644fb408
+   * 周榜：id->_id
+   * 月榜：id->monthRank
+   * 总榜：id->totalRank
+   */
   DISCOVER_CHARTS_DETAIL: (id) => {return API_BASE_URL + '/ranking/' + id},
+  /**
+   * GET 获取主题书单列表
+   * 本周最热：duration=last-seven-days&sort=collectorCount
+   * 最新发布：duration=all&sort=created
+   * 最多收藏：duration=all&sort=collectorCount
+   * start 从多少开始请求
+   * tag 都市、古代、架空、重生、玄幻、网游
+   * gender male、female
+   * limit  20
+   */
+  DISCOVER_BOOK_LIST: API_BASE_URL + '/book-list',
 
 
 
