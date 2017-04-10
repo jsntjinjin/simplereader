@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Bookshelves from './home/bookshelves'
 import Discover from './home/discover'
 import Community from './home/community'
+import Mine from './home/mine'
 import TabBar from '../weight/TabBar'
 import Search from './search'
 import config from '../common/config'
@@ -52,7 +53,7 @@ export default class Home extends Component {
           <Bookshelves tabLabel="书架" navigator={this.props.navigator} />
           <Discover tabLabel='发现' navigator={this.props.navigator} />
           <Community tabLabel='社区' navigator={this.props.navigator} />
-          <Text tabLabel='我的' navigator={this.props.navigator} />
+          <Mine tabLabel='我的' navigator={this.props.navigator} />
         </ScrollableTabView>
       </View>
     )

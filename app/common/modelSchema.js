@@ -4,6 +4,7 @@
  * time: 2017年04月04日14:44:45
  */
 
+// 书架
 const HistoryBookSchema = {
   name: 'HistoryBook',
   primaryKey: 'bookId',
@@ -20,6 +21,24 @@ const HistoryBookSchema = {
   }
 }
 
-const schemaArray = [HistoryBookSchema]
+// 我的书单
+const MyCollectionBookListsSchema = {
+  name: 'MyCollectionBookLists',
+  primaryKey: 'id',
+  properties: {
+    id: 'string',
+    author: 'string',
+    bookCount: 'int',
+    collectorCount: 'int',
+    cover: 'string',
+    desc: 'string',
+    title: 'string',
+    gender: 'string',
+    collectionTime: 'date',
+    isToShow: 'bool'
+  }
+}
+
+const schemaArray = [HistoryBookSchema, MyCollectionBookListsSchema]
 
 module.exports = schemaArray

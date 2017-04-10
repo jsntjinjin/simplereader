@@ -19,6 +19,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons'
 
 import ReadPlatform from './readPlatform'
+import BookListDetail from './discover/bookListDetail'
 import StarLevel from '../weight/starLevel'
 import TagsGroup from '../weight/tagsGroup'
 import request from '../utils/httpUtil'
@@ -206,7 +207,13 @@ export default class BookDetail extends Component {
    * @param {string} key 书单id
    */
   _recommendBookDetail(key) {
-    console.log(this.state.recommendBookList[key].id)
+    this.props.navigator.push({
+      name: 'bookListDetail',
+        component: BookListDetail,
+        params: {
+          bookListId: this.state.recommendBookList[key].id
+        }
+    })
   }
 
   _back() {

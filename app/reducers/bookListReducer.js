@@ -12,8 +12,7 @@ const initialState = {
   isLoading: false,
   isLoadingMore: false,
   bookLists: [],
-  total: 0,
-  isLoadingDetail: false,
+  total: 0
 }
 
 export default function charts(state = initialState, action) {
@@ -28,14 +27,6 @@ export default function charts(state = initialState, action) {
         isLoadingMore: action.isLoadingMore,
         total: action.total,
         bookLists: action.bookLists
-      })
-    case types.DISCOVER_BOOK_LIST_DETAIL_LOADING:
-      return Object.assign({}, state, {
-        isLoadingDetail: action.isLoadingDetail
-      })
-    case types.DISCOVER_BOOK_LIST_DETAIL:
-      return Object.assign({}, state, {
-        isLoadingDetail: action.isLoadingDetail,
       })
     default:
       return state

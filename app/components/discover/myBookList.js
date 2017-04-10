@@ -1,7 +1,7 @@
 /*
- * description: 主题书单页面
+ * description: 我的收藏书单页面
  * author: 麦芽糖
- * time: 2017年04月05日16:10:56
+ * time: 2017年04月10日10:47:58
  */
 
 import React, { Component } from 'react'
@@ -20,74 +20,52 @@ import { connect } from 'react-redux'
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view'
 
 import TabBarOnlyText from '../../weight/TabBarOnlyText'
-import BookListDetail from './bookListDetail'
+import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
-import {bookListData} from '../../actions/bookListAction'
+import request from '../../utils/httpUtil'
+import Toast from '../../weight/toast'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-var tabNames = ['本周最热', '最新发布', '最多收藏']
 
-class BookList extends Component {
+export default class BookListDetail extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      gender: 'male',
-      tag: '',
-      style: 0
+      myBookList: []
     }
   }
 
   componentDidMount() {
-    const {dispatch} = this.props
-    dispatch(bookListData(this._setBookListParams(this.state.style, 0, this.state.tag, this.state.gender), true, []))
-  }
-
-  _setBookListParams(style, start, tag, gender) {
-    var limit = 20
-    switch (style) {
-      case 0: // 本周最热
-        return {duration: 'last-seven-days', sort: 'collectorCount', start: start, tag: tag, gender: gender, limit: limit}
-      case 1: // 最新发布
-        return {duration: 'all', sort: 'created', start: start, tag: tag, gender: gender, limit: limit}
-      case 2: // 最多收藏
-        return {duration: 'all', sort: 'collectorCount', start: start, tag: tag, gender: gender, limit: limit}
-    }
+    this._getMyBookList()
   }
 
   _back() {
     this.props.navigator.pop()
   }
 
-  _clickStarts() {
-    this.setState({haha: 'abc'})
+  _getMyBookList() {
+    var bookList = realm.objects('MyCollectionBookLists').filtered('isToShow = true').sorted('collectionTime', true)
+    this.setState({myBookList: bookList})
   }
 
-  _goToBookListDetail(rowData) {
+  _goToBookListDetail(bookId) {
     this.props.navigator.push({
-      name: 'bookListDetail',
-      component: BookListDetail,
+      name: 'bookDetail',
+      component: BookDetail,
       params: {
-        bookListId: rowData._id
+        bookId: bookId
       }
     })
-  }
-
-  _showMoreItem() {
-    const {bookList, dispatch} = this.props
-    if(bookList.bookLists.length === 0 || bookList.isLoading || bookList.isLoadingMore || bookList.bookLists.length === bookList.total){
-      return
-    }
-    dispatch(bookListData(this._setBookListParams(this.state.style, bookList.bookLists.length, this.state.tag, this.state.gender), false, bookList.bookLists))
   }
 
   renderBookList(rowData) {
     return (
       <TouchableOpacity 
         activeOpacity={0.5}
-        onPress={() => this._goToBookListDetail(rowData)}>
+        onPress={() => this._goToBookListDetail(rowData.id)}>
         <View style={styles.item}>
           <Image 
             style={styles.itemImage}
@@ -106,24 +84,7 @@ class BookList extends Component {
     )
   }
 
-  renderFooter() {
-    const {bookList} = this.props
-    if (bookList.bookLists.length === 0 || bookList.isLoading) {
-      return null
-    }
-    if (bookList.bookLists.length < bookList.total) {
-      return (
-        <Text style={styles.bookListFooter}>正在加载更多~~~</Text>
-      )
-    } else {
-      return (
-        <Text style={styles.bookListFooter}>没有更多书单了~~~</Text>
-      )
-    }
-  }
-
   render() {
-    const {bookList} = this.props
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -133,24 +94,16 @@ class BookList extends Component {
             size={25}
             color={config.css.color.appBlack}
             onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>主题书单</Text>
-          <Icon 
-            name='ios-stats-outline'
-            style= {styles.headerIcon}
-            size={25}
-            onPress={this._clickStarts.bind(this)}
-            color={config.css.color.appBlack}/>
+          <Text style={styles.headerText}>我的书单</Text>
         </View>
-        {bookList.isLoading ? 
-            <Text style={styles.body}>正在加载中~~~</Text>
-          :
+        {this.state.myBookList ?
             <ListView
+              style={styles.body}
               enableEmptySections={true}
-              dataSource={ds.cloneWithRows(bookList.bookLists)}
-              onEndReached={this._showMoreItem.bind(this)}
-              onEndReachedThreshold={30}
-              renderRow={this.renderBookList.bind(this)}
-              renderFooter={this.renderFooter.bind(this)}/>
+              dataSource={ds.cloneWithRows(this.state.myBookList)}
+              renderRow={this.renderBookList.bind(this)}/>
+          : 
+            <Text style={styles.body}>暂无数据</Text>
         }
       </View>
     )
@@ -182,14 +135,9 @@ const styles = StyleSheet.create({
   body: {
     flex: 1
   },
-  listHeader: {
-    width: Dimen.window.width,
-    margin: 14,
-    fontSize: config.css.fontSize.appTitle,
-    color: config.css.fontColor.title,
-  },
   item: {
     flexDirection: 'row',
+    backgroundColor: config.css.color.white,
     height: 100,
     width: Dimen.window.width,
     borderTopWidth: 1,
@@ -215,21 +163,6 @@ const styles = StyleSheet.create({
   itemDesc: {
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.desc,
-    marginTop: 3,
-    marginRight: 14
-  },
-  bookListFooter: {
-    height: 30,
-    width: Dimen.window.width,
-    textAlign: 'center'
+    marginTop: 3
   }
 })
-
-function mapStateToProps(store) {
-  const { bookList } = store
-  return {
-    bookList
-  }
-}
-
-export default connect(mapStateToProps)(BookList)
