@@ -15,7 +15,7 @@ import CommonItemForTab from '../../weight/commonItemForTab'
 import ReadPlatform from '../readPlatform'
 import Charts from '../discover/charts'
 import BookList from '../discover/bookList'
-import Classify from '../discover/classify'
+import CategoryList from '../discover/categoryList'
 import config from '../../common/config'
 
 export default class Discover extends Component {
@@ -52,8 +52,8 @@ export default class Discover extends Component {
    */
   _goToClassify() {
     this.props.navigator.push({
-      name: 'classify',
-      component: Classify
+      name: 'categoryList',
+      component: CategoryList
     })
   }
 

@@ -61,10 +61,6 @@ class BookList extends Component {
     this.props.navigator.pop()
   }
 
-  _clickStarts() {
-    this.setState({haha: 'abc'})
-  }
-
   _goToBookListDetail(rowData) {
     this.props.navigator.push({
       name: 'bookListDetail',
@@ -81,6 +77,10 @@ class BookList extends Component {
       return
     }
     dispatch(bookListData(this._setBookListParams(this.state.style, bookList.bookLists.length, this.state.tag, this.state.gender), false, bookList.bookLists))
+  }
+
+  _changeTag() {
+
   }
 
   renderBookList(rowData) {
@@ -138,7 +138,7 @@ class BookList extends Component {
             name='ios-stats-outline'
             style= {styles.headerIcon}
             size={25}
-            onPress={this._clickStarts.bind(this)}
+            onPress={this._changeTag.bind(this)}
             color={config.css.color.appBlack}/>
         </View>
         {bookList.isLoading ? 
