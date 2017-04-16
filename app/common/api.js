@@ -75,6 +75,74 @@ module.exports = {
    */
   DISCOVER_CATEGORY_BOOKS: API_BASE_URL + '/book/by-categories',
 
+  // ----------------community----------------
+  /**
+   * 获取综合讨论区帖子列表
+   * 全部、默认排序  http://api.zhuishushenqi.com/post/by-block?block=ramble&duration=all&sort=updated&type=all&start=0&limit=20&distillate=
+   * 精品、默认排序  http://api.zhuishushenqi.com/post/by-block?block=ramble&duration=all&sort=updated&type=all&start=0&limit=20&distillate=true
+   * @param block      ramble:综合讨论区
+   *                   original：原创区
+   * @param duration   all
+   * @param sort       updated(默认排序)
+   *                   created(最新发布)
+   *                   comment-count(最多评论)
+   * @param type       all
+   * @param start      0
+   * @param limit      20
+   * @param distillate true(精品)
+   */
+  COMMUNITY_BOOK_DISCUSSION_LIST: API_BASE_URL + '/post/by-block',
+  // 获取综合讨论区帖子详情
+  COMMUNITY_BOOK_DISCUSSION_DETAIL: (id) => {return API_BASE_URL + '/post/' + id},
+  // 获取神评论列表(综合讨论区、书评区、书荒区皆为同一接口)
+  COMMUNITY_BOOK_DISCUSSION_COMMENT_BEST: (id) => {return API_BASE_URL + '/post/' + id + '/comment/best'},
+  /**
+   * 获取综合讨论区帖子详情内的评论列表
+   * @param start              0
+   * @param limit              30
+   */
+  COMMUNITY_BOOK_DISCUSSION_COMMENT_LIST: (id) => {return API_BASE_URL + '/post/' + id + '/comment'},
+  /**
+   * 获取书评区帖子列表
+   * 全部、全部类型、默认排序  http://api.zhuishushenqi.com/post/review?duration=all&sort=updated&type=all&start=0&limit=20&distillate=
+   * 精品、玄幻奇幻、默认排序  http://api.zhuishushenqi.com/post/review?duration=all&sort=updated&type=xhqh&start=0&limit=20&distillate=true
+   *
+   * @param duration   all
+   * @param sort       updated(默认排序)
+   *                   created(最新发布)
+   *                   helpful(最有用的)
+   *                   comment-count(最多评论)
+   * @param type       all(全部类型)、xhqh(玄幻奇幻)、dsyn(都市异能)...
+   * @param start      0
+   * @param limit      20
+   * @param distillate true(精品) 、空字符（全部）
+   */
+  COMMUNITY_BOOK_REVIEW_LIST: API_BASE_URL + '/post/review',
+  // 获取书评区帖子详情
+  COMMUNITY_BOOK_REVIEW_DETAIL: (id) => {return API_BASE_URL + '/post/review/' + id},
+  /**
+   * 获取书评区、书荒区帖子详情内的评论列表
+   * @param start             0
+   * @param limit             30
+   */
+  COMMUNITY_BOOK_REVIEW_COMMENT_LIST: (id) => {return API_BASE_URL + '/post/review/' + id + '/comment'},
+  /**
+   * 获取书荒区帖子列表
+   * 全部、默认排序  http://api.zhuishushenqi.com/post/help?duration=all&sort=updated&start=0&limit=20&distillate=
+   * 精品、默认排序  http://api.zhuishushenqi.com/post/help?duration=all&sort=updated&start=0&limit=20&distillate=true
+   * @param duration   all
+   * @param sort       updated(默认排序)
+   *                   created(最新发布)
+   *                   comment-count(最多评论)
+   * @param start      0
+   * @param limit      20
+   * @param distillate true(精品) 、空字符（全部）
+   */
+  COMMUNITY_BOOK_HELP_LIST: API_BASE_URL + '/post/help',
+  // 获取书荒区帖子详情
+  COMMUNITY_BOOK_HELP_DETAIL: (id) => {return API_BASE_URL + '/post/help/' + id},
+  
+
   // ----------------search----------------
   // GET 热门关键字
   SEARCH_HOT_WORD: API_BASE_URL + '/book/hot-word', 

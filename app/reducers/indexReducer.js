@@ -11,12 +11,16 @@ import readPlatform from './readPlatformReducer'
 import charts from './chartsReducer'
 import bookList from './bookListReducer'
 import categoryList from './categoryListReducer'
+import bookDiscussion from './bookDiscussionReducer'
+import bookReview from './bookReviewReducer'
 
 const rootReducer = combineReducers({
   readPlatform,
   charts,
   bookList,
-  categoryList
+  categoryList,
+  bookDiscussion,
+  bookReview
 })
 
 export default rootReducer

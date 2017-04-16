@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 
 import CommonItemForTab from '../../weight/commonItemForTab'
-import ReadPlatform from '../readPlatform'
 import BookDiscussion from '../community/bookDiscussion'
 import BookReview from '../community/bookReview'
 import BookHelp from '../community/bookHelp'
