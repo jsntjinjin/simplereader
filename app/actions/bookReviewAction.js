@@ -66,7 +66,7 @@ export let bookReviewDetailCommentList = (id, params, isFirst, oldList) => {
 
 export let bookReviewDetailCommentBest = (id) => {
   return dispatch => {
-    return request.get(api.COMMUNITY_BOOK_DISCUSSION_COMMENT_BEST(id), null)
+    return request.get(api.COMMUNITY_BOOK_COMMENT_BEST(id), null)
       .then((data) => {
         if (data.ok) {
           dispatch(getBookReviewCommentBestSuccess(data.comments))

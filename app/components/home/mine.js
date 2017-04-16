@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 
 import CommonItemForTab from '../../weight/commonItemForTab'
-import MyBookList from '../discover/myBookList'
+import MyBookList from '../mine/myBookList'
 import config from '../../common/config'
 
 export default class Mine extends Component {

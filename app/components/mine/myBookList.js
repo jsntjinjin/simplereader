@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view'
 
 import TabBarOnlyText from '../../weight/TabBarOnlyText'
-import BookDetail from '../bookDetail'
+import BookListDetail from '../discover/bookListDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
@@ -29,7 +29,7 @@ import Toast from '../../weight/toast'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-export default class BookListDetail extends Component {
+export default class MyBookList extends Component {
 
   constructor(props) {
     super(props)
@@ -51,12 +51,12 @@ export default class BookListDetail extends Component {
     this.setState({myBookList: bookList})
   }
 
-  _goToBookListDetail(bookId) {
+  _goToBookListDetail(bookListId) {
     this.props.navigator.push({
-      name: 'bookDetail',
-      component: BookDetail,
+      name: 'bookListDetail',
+      component: BookListDetail,
       params: {
-        bookId: bookId
+        bookListId: bookListId
       }
     })
   }

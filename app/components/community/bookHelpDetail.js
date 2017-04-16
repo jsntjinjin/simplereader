@@ -1,9 +1,9 @@
 /*
- * description: 书评详情
+ * description: 书荒互助区详情
  * author: 麦芽糖
- * time: 2017年04月16日16:11:58
+ * time: 2017年04月16日23:08:56
  */
-
+ 
 import React, { Component } from 'react'
 import {
   Image,
@@ -19,18 +19,19 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
 import BookDetail from '../bookDetail'
+import Search from '../search'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import StarLevel from '../../weight/starLevel'
 import api from '../../common/api'
-import {bookReviewDetail, 
-  bookReviewDetailCommentList,
-  bookReviewDetailCommentBest
-} from '../../actions/bookReviewAction'
+import {bookHelpDetail, 
+  bookHelpDetailCommentList,
+  bookHelpDetailCommentBest
+} from '../../actions/bookHelpAction'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-class BookReviewDetail extends Component {
+class BookHelpDetail extends Component {
 
   constructor(props) {
     super(props)
@@ -41,11 +42,11 @@ class BookReviewDetail extends Component {
 
   componentDidMount() {
     const {dispatch} = this.props
-    const _id = this.props.bookReviewId
+    const _id = this.props.bookHelpId
     this.setState({id: _id})
-    dispatch(bookReviewDetail(_id))
-    dispatch(bookReviewDetailCommentBest(_id))
-    dispatch(bookReviewDetailCommentList(_id, {start: 0, limit: 30}, true, []))
+    dispatch(bookHelpDetail(_id))
+    dispatch(bookHelpDetailCommentBest(_id))
+    dispatch(bookHelpDetailCommentList(_id, {start: 0, limit: 30}, true, []))
   }
 
   _back() {
@@ -53,27 +54,27 @@ class BookReviewDetail extends Component {
   }
 
   _showMoreItem() {
-    const {bookReview, dispatch, _id} = this.props
-    if(bookReview.bookReviewCommentList.length === 0 
-      || bookReview.isLoadingBookReviewCommentList 
-      || bookReview.isLoadingBookReviewCommentListMore 
-      || bookReview.bookReviewCommentList.length >= bookReview.totalComment){
+    const {bookHelp, dispatch, _id} = this.props
+    if(bookHelp.bookHelpCommentList.length === 0 
+      || bookHelp.isLoadingBookHelpCommentList 
+      || bookHelp.isLoadingBookHelpCommentListMore 
+      || bookHelp.bookHelpCommentList.length >= bookHelp.totalComment){
       return
     }
-    dispatch(bookReviewDetailCommentList(this.state.id, {start: bookReview.bookReviewCommentList.length, limit: 30}, false, bookReview.bookReviewCommentList))
+    dispatch(bookHelpDetailCommentList(this.state.id, {start: bookHelp.bookHelpCommentList.length, limit: 30}, false, bookHelp.bookHelpCommentList))
   }
 
-  _goToBookDetail(id) {
+  _goToSearch(word) {
     this.props.navigator.push({
-      name: 'bookDetail',
-      component: BookDetail,
+      name: 'search',
+      component: Search,
       params: {
-        bookId: id
+        searchWord: word
       }
     })
   }
 
-  renderBookReviewCommentBest(rowData) {
+  renderBookHelpCommentBest(rowData) {
     return (
       <View style={styles.item}>
         <Image 
@@ -101,7 +102,7 @@ class BookReviewDetail extends Component {
     )
   }
 
-  renderBookReviewComment(rowData) {
+  renderBookHelpComment(rowData) {
     return (
       <View style={styles.item}>
         <Image 
@@ -125,75 +126,38 @@ class BookReviewDetail extends Component {
   }
 
   renderHeader() {
-    const {bookReview} = this.props
+    const {bookHelp} = this.props
     return (
       <View>
-        {bookReview.bookReviewDetail ?
+        {bookHelp.bookHelpDetail ?
           <View>
             <View style={{paddingTop: 10, flexDirection: 'row', alignItems: 'center'}}>
               <Image 
                 style={styles.authorImage}
-                source={bookReview.bookReviewDetail.author.avatar 
-                  ? {uri: (api.IMG_BASE_URL + bookReview.bookReviewDetail.author.avatar)} 
+                source={bookHelp.bookHelpDetail.author.avatar 
+                  ? {uri: (api.IMG_BASE_URL + bookHelp.bookHelpDetail.author.avatar)} 
                   : require('../../imgs/splash.jpg')}
                 />
               <View style={styles.authorBody}>
-                <Text style={styles.authorTitle}>{bookReview.bookReviewDetail.author.nickname}</Text>
-                <Text style={styles.authorCreateTime}>{bookReview.bookReviewDetail.created}</Text>
+                <Text style={styles.authorTitle}>{bookHelp.bookHelpDetail.author.nickname}</Text>
+                <Text style={styles.authorCreateTime}>{bookHelp.bookHelpDetail.created}</Text>
               </View>
             </View>
-            <Text style={styles.detailTitle}>{bookReview.bookReviewDetail.title}</Text>
-            <Text style={styles.detailContent}>{bookReview.bookReviewDetail.content}</Text>
-            <TouchableOpacity activeOpacity={0.5} onPress={() => this._goToBookDetail(bookReview.bookReviewDetail.book._id)}>
-              <View style={styles.bookBody}>
-                <Image 
-                  style={{height: 60, width: 45, alignSelf: 'center'}}
-                  source={bookReview.bookReviewDetail.book.cover 
-                    ? {uri: (api.IMG_BASE_URL + bookReview.bookReviewDetail.book.cover)} 
-                    : require('../../imgs/splash.jpg')}/>
-                <View style={{marginLeft: 14, alignSelf: 'center'}}>
-                  <Text style={{fontSize: config.css.fontSize.title, color: config.css.fontColor.title}}>{bookReview.bookReviewDetail.book.title}</Text>
-                  <View style={{flexDirection: 'row', marginTop: 10}}>
-                    <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>楼主打分: </Text>
-                    <StarLevel rating={bookReview.bookReviewDetail.rating}/>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.listHeader}>给书评打分</Text>
-            <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 10, marginBottom: 10}}>
-              <View style={{alignItems: 'center'}}>
-                <Text>{bookReview.bookReviewDetail.helpful.yes}</Text>
-                <Icon 
-                  name='ios-thumbs-up-outline'
-                  size={15}
-                  color={config.css.fontColor.desc}>
-                  <Text style={{fontSize: config.css.fontSize.desc}}>赞同</Text>
-                </Icon>
-              </View> 
-              <View style={{alignItems: 'center'}}>
-                <Text>{bookReview.bookReviewDetail.helpful.no}</Text>
-                <Icon 
-                  name='ios-thumbs-down-outline'
-                  size={15}
-                  color={config.css.fontColor.desc}>
-                  <Text style={{fontSize: config.css.fontSize.desc}}>反对</Text>
-                </Icon>
-              </View> 
-            </View>
-            {bookReview.bookReviewDetailCommentBest.length !== 0 ?
+            <Text style={styles.detailTitle}>{bookHelp.bookHelpDetail.title}</Text>
+            <Text style={styles.detailContent}>{bookHelp.bookHelpDetail.content}</Text>
+            {bookHelp.bookHelpDetailCommentBest.length !== 0 ?
                 <View>
                   <Text style={styles.listHeader}>仰望神评论</Text>
                   <ListView
                     enableEmptySections={true}
-                    dataSource={ds.cloneWithRows(bookReview.bookReviewDetailCommentBest)}
-                    renderRow={this.renderBookReviewCommentBest.bind(this)}/>
+                    dataSource={ds.cloneWithRows(bookHelp.bookHelpDetailCommentBest)}
+                    renderRow={this.renderBookHelpCommentBest.bind(this)}/>
                 </View>
               : 
                 null
             }
             <Text style={styles.listHeader}>
-              {'共' + bookReview.totalComment + '条评论'}
+              {'共' + bookHelp.totalComment + '条评论'}
             </Text>
           </View>
           : 
@@ -204,11 +168,11 @@ class BookReviewDetail extends Component {
   }
 
   renderFooter() {
-    const {bookReview} = this.props
-    if (bookReview.bookReviewCommentList.length === 0 || bookReview.isLoadingBookReviewCommentList) {
+    const {bookHelp} = this.props
+    if (bookHelp.bookHelpCommentList.length === 0 || bookHelp.isLoadingBookHelpCommentList) {
       return null
     }
-    if (bookReview.bookReviewCommentList.length < bookReview.totalComment) {
+    if (bookHelp.bookHelpCommentList.length < bookHelp.totalComment) {
       return (
         <Text style={styles.footer}>正在加载更多评论~~~</Text>
       )
@@ -220,7 +184,7 @@ class BookReviewDetail extends Component {
   }
 
   render() {
-    const {bookReview} = this.props
+    const {bookHelp} = this.props
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -232,15 +196,15 @@ class BookReviewDetail extends Component {
             onPress={this._back.bind(this)}/>
           <Text style={styles.headerText}>详情</Text>
         </View>
-        {bookReview.isLoadingBookReviewCommentList ? 
+        {bookHelp.isLoadingBookHelpCommentList ? 
             <Text style={styles.body}>正在加载中~~~</Text>
           :
             <ListView
               enableEmptySections={true}
-              dataSource={ds.cloneWithRows(bookReview.bookReviewCommentList)}
+              dataSource={ds.cloneWithRows(bookHelp.bookHelpCommentList)}
               onEndReached={this._showMoreItem.bind(this)}
               onEndReachedThreshold={30}
-              renderRow={this.renderBookReviewComment.bind(this)}
+              renderRow={this.renderBookHelpComment.bind(this)}
               renderHeader={this.renderHeader.bind(this)}
               renderFooter={this.renderFooter.bind(this)}/>
         }
@@ -368,10 +332,10 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps(store) {
-  const { bookReview } = store
+  const { bookHelp } = store
   return {
-    bookReview
+    bookHelp
   }
 }
 
-export default connect(mapStateToProps)(BookReviewDetail)
+export default connect(mapStateToProps)(BookHelpDetail)

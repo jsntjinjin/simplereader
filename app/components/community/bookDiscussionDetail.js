@@ -55,7 +55,7 @@ class BookDiscussionDetail extends Component {
     if(bookDiscussion.bookDiscussionCommentList.length === 0 
       || bookDiscussion.isLoadingBookDiscussionCommentList 
       || bookDiscussion.isLoadingBookDiscussionCommentListMore 
-      || bookDiscussion.bookDiscussionCommentList.length === bookDiscussion.totalComment){
+      || bookDiscussion.bookDiscussionCommentList.length >= bookDiscussion.totalComment){
       return
     }
     dispatch(bookDiscussionDetailCommentList(this.state.id, {start: bookDiscussion.bookDiscussionCommentList.length, limit: 30}, false, bookDiscussion.bookDiscussionCommentList))

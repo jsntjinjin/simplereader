@@ -44,8 +44,12 @@ export default class Search extends Component {
 
   componentDidMount() {
     // 请求热词,和获取历史搜索数据
+    let searchW = this.props.searchWord
     this._searchHotWords()
-    this.__storageSelectSearchHistory()
+    this._storageSelectSearchHistory()
+    if (searchW) {
+      this._changeSearchWord(searchW)
+    }
   }
 
   /**
@@ -114,7 +118,7 @@ export default class Search extends Component {
     }
   }
 
-  __storageSelectSearchHistory() {
+  _storageSelectSearchHistory() {
     storage.load({
       key: 'search'
     })
@@ -203,7 +207,7 @@ export default class Search extends Component {
 
   _back() {
     if (this.state.searchState) {
-      this.setState({searchState: false, searchWords: ''})
+      this.setState({searchState: false, searchWords: '', autoComplete: this.state.autoComplete.cloneWithRows([])})
     }else{
       this.props.navigator.pop()
     }

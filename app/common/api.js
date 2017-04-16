@@ -95,7 +95,7 @@ module.exports = {
   // 获取综合讨论区帖子详情
   COMMUNITY_BOOK_DISCUSSION_DETAIL: (id) => {return API_BASE_URL + '/post/' + id},
   // 获取神评论列表(综合讨论区、书评区、书荒区皆为同一接口)
-  COMMUNITY_BOOK_DISCUSSION_COMMENT_BEST: (id) => {return API_BASE_URL + '/post/' + id + '/comment/best'},
+  COMMUNITY_BOOK_COMMENT_BEST: (id) => {return API_BASE_URL + '/post/' + id + '/comment/best'},
   /**
    * 获取综合讨论区帖子详情内的评论列表
    * @param start              0
