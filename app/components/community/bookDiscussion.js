@@ -23,8 +23,10 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import {bookDiscussionList} from '../../actions/bookDiscussionAction'
+import SelectionTabs from '../../weight/selectionTabs'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+var tabArray = [config.distillate, config.discussionSort]
 
 class BookDiscussion extends Component {
 
@@ -47,6 +49,13 @@ class BookDiscussion extends Component {
 
   _back() {
     this.props.navigator.pop()
+  }
+
+  _changeState(selected) {
+    console.log('selected', selected)
+    const {dispatch} = this.props
+    this.setState({distillate: selected[0].distillate, sort: selected[1].sort})
+    dispatch(bookDiscussionList(this._setParams(selected[1].sort, selected[0].distillate, 0), true, []))
   }
 
   _showMoreItem() {
@@ -136,6 +145,7 @@ class BookDiscussion extends Component {
             onPress={this._back.bind(this)}/>
           <Text style={styles.headerText}>综合讨论区</Text>
         </View>
+        <SelectionTabs tabArray={tabArray} selectItem={(selected) => this._changeState(selected)}/>
         {bookDiscussion.isLoadingBookDiscussionList ? 
             <Text style={styles.body}>正在加载中~~~</Text>
           :

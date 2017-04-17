@@ -23,8 +23,10 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import {bookReviewList} from '../../actions/bookReviewAction'
+import SelectionTabs from '../../weight/selectionTabs'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+var tabArray = [config.distillate, config.reviewBookType, config.reviewSort]
 
 class BookReview extends Component {
 
@@ -32,21 +34,28 @@ class BookReview extends Component {
     super(props)
     this.state = {
       sort: 'updated',
-      distillate: ''
+      distillate: '',
+      type: 'all'
     }
   }
 
   componentDidMount() {
     const {dispatch} = this.props
-    dispatch(bookReviewList(this._setParams(this.state.sort, this.state.distillate, 0), true, []))
+    dispatch(bookReviewList(this._setParams(this.state.sort, this.state.type, this.state.distillate, 0), true, []))
   }
 
-  _setParams(sort, distillate, start) {
-    return {duration: 'all', sort: sort, type: 'all', start: start, limit: 20, distillate: distillate}
+  _setParams(sort, type, distillate, start) {
+    return {duration: 'all', sort: sort, type: type, start: start, limit: 20, distillate: distillate}
   }
 
   _back() {
     this.props.navigator.pop()
+  }
+
+  _changeState(selected) {
+    const {dispatch} = this.props
+    this.setState({distillate: selected[0].distillate, type: selected[1].type, sort: selected[2].sort})
+    dispatch(bookReviewList(this._setParams(selected[2].sort, selected[1].type, selected[0].distillate, 0), true, []))
   }
 
   _showMoreItem() {
@@ -54,7 +63,7 @@ class BookReview extends Component {
     if(bookReview.bookReviewList.length === 0 || bookReview.isLoadingBookReviewList || bookReview.isLoadingBookReviewListMore){
       return
     }
-    dispatch(bookReviewList(this._setParams(this.state.sort, this.state.distillate, bookReview.bookReviewList.length), false, bookReview.bookReviewList))
+    dispatch(bookReviewList(this._setParams(this.state.sort, this.state.type, this.state.distillate, bookReview.bookReviewList.length), false, bookReview.bookReviewList))
   }
 
   _checkType(type) {
@@ -133,6 +142,7 @@ class BookReview extends Component {
             onPress={this._back.bind(this)}/>
           <Text style={styles.headerText}>书评区</Text>
         </View>
+        <SelectionTabs tabArray={tabArray} selectItem={(selected) => this._changeState(selected)}/>
         {bookReview.isLoadingBookReviewList ? 
             <Text style={styles.body}>正在加载中~~~</Text>
           :

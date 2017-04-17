@@ -28,8 +28,8 @@ export default class Community extends Component {
   }
 
   /**
-   * 跳转综合讨论区/原创区
-   * @param {string} block ramble:综合讨论区  original：原创区
+   * 跳转综合讨论区/原创区/女生区
+   * @param {string} block ramble:综合讨论区  original：原创区  girl: 女生区
    */
   _goToBookDiscussion(block) {
     this.props.navigator.push({
@@ -80,7 +80,7 @@ export default class Community extends Component {
         <View style={styles.line}/>
         <CommonItemForTab title={'书荒互助区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookHelp()}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'女生区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToGirlBookDiscussion()}/>
+        <CommonItemForTab title={'女生区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookDiscussion('girl')}/>
         <View style={styles.line}/>
         <CommonItemForTab title={'原创区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookDiscussion('original')}/>
       </View>

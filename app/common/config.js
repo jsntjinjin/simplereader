@@ -63,6 +63,35 @@ module.exports = {
     'dmtr': '耽美同人',
   },
   bookTypeKey: ['全部类型','玄幻奇幻','武侠仙侠','都市异能','历史军事','游戏竞技','科幻灵异','穿越架空','豪门总裁','现代言情','古代言情','幻想言情','耽美同人'],
-  bookTypeValue: ['all', 'xhqh', 'wxxx', 'dsyn', 'lsjs', 'yxjj', 'khly', 'cyjk', 'hmzc', 'xdyq', 'gdyq', 'hxyq', 'dmtr', 
+  bookTypeValue: ['all', 'xhqh', 'wxxx', 'dsyn', 'lsjs', 'yxjj', 'khly', 'cyjk', 'hmzc', 'xdyq', 'gdyq', 'hxyq', 'dmtr', ],
+  distillate: [
+    {name: '全部', distillate: ''}, 
+    {name: '精品', distillate: 'true'}
+  ],
+  discussionSort: [
+    {name: '默认排序', sort: 'updated'}, 
+    {name: '最新发布', sort: 'created'}, 
+    {name: '最多评论', sort: 'comment-count'}
+  ],
+  reviewSort: [
+    {name: '默认排序', sort: 'updated'}, 
+    {name: '最新发布', sort: 'created'}, 
+    {name: '最有用的', sort: 'helpful'},
+    {name: '最多评论', sort: 'comment-count'},
+  ],
+  reviewBookType: [
+    {name: '全部类型', type: 'all'},
+    {name: '玄幻奇幻', type: 'xhqh'},
+    {name: '武侠仙侠', type: 'wxxx'},
+    {name: '都市异能', type: 'dsyn'},
+    {name: '历史军事', type: 'lsjs'},
+    {name: '游戏竞技', type: 'yxjj'},
+    {name: '科幻灵异', type: 'khly'},
+    {name: '穿越架空', type: 'cyjk'},
+    {name: '豪门总裁', type: 'hmzc'},
+    {name: '现代言情', type: 'xdyq'},
+    {name: '古代言情', type: 'gdyq'},
+    {name: '幻想言情', type: 'hxyq'},
+    {name: '耽美同人', type: 'dmtr'},
   ]
 }

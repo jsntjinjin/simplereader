@@ -82,6 +82,7 @@ module.exports = {
    * 精品、默认排序  http://api.zhuishushenqi.com/post/by-block?block=ramble&duration=all&sort=updated&type=all&start=0&limit=20&distillate=true
    * @param block      ramble:综合讨论区
    *                   original：原创区
+   *                   girl: 女生区
    * @param duration   all
    * @param sort       updated(默认排序)
    *                   created(最新发布)
