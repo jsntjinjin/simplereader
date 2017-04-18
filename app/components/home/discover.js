@@ -65,8 +65,6 @@ export default class Discover extends Component {
         <CommonItemForTab title={'主题书单'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToThemeBookList()}/>
         <View style={styles.line}/>
         <CommonItemForTab title={'分类'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToClassify()}/>
-        <View style={styles.line}/>
-        <CommonItemForTab title={'有声小说'} image={require('../../imgs/splash.jpg')}/>
       </View>
     )
   }

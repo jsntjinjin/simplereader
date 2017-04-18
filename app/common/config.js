@@ -62,8 +62,6 @@ module.exports = {
     'hxyq': '幻想言情',
     'dmtr': '耽美同人',
   },
-  bookTypeKey: ['全部类型','玄幻奇幻','武侠仙侠','都市异能','历史军事','游戏竞技','科幻灵异','穿越架空','豪门总裁','现代言情','古代言情','幻想言情','耽美同人'],
-  bookTypeValue: ['all', 'xhqh', 'wxxx', 'dsyn', 'lsjs', 'yxjj', 'khly', 'cyjk', 'hmzc', 'xdyq', 'gdyq', 'hxyq', 'dmtr', ],
   distillate: [
     {name: '全部', distillate: ''}, 
     {name: '精品', distillate: 'true'}

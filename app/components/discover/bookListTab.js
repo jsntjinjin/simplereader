@@ -1,7 +1,7 @@
 /*
- * description: 分类详情的tab页面
+ * description: 主题书单tab页面
  * author: 麦芽糖
- * time: 2017年04月11日11:38:04
+ * time: 2017年04月18日10:48:54
  */
 
 import React, { Component } from 'react'
@@ -22,16 +22,17 @@ import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
+import BookListDetail from './bookListDetail'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-export default class CategoryDetailTab extends Component {
+export default class BookListTab extends Component {
 
   static propTypes = {
+    duration: React.PropTypes.string,
+    sort: React.PropTypes.string,
     gender: React.PropTypes.string,
-    type: React.PropTypes.string,
-    major: React.PropTypes.string,
-    minor: React.PropTypes.string
+    tag: React.PropTypes.string
   }
 
   constructor(props) {
@@ -39,47 +40,50 @@ export default class CategoryDetailTab extends Component {
     this.state = {
       isLoading: false,
       isLoadingMore: false,
-      bookList: [],
+      bookLists: [],
       total: 0
     }
   }
 
+  _setTabParams(duration, sort, tag, gender, start) {
+    return {duration: duration, sort: sort, start: start, tag: tag, gender: gender, limit: 20}
+  }
+
   componentDidMount() {
-    let params = this._setTabParams(this.props.gender, this.props.type, this.props.major, this.props.minor, 0)
-    this._getCategoryTabDetail(params)
+    let params = this._setTabParams(this.props.duration, this.props.sort, this.props.tag, this.props.gender, 0)
+    this._getBookListTabDetail(params)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.minor !== this.props.minor) {
-      this.setState({bookList: [], total: 0})
-      let params = this._setTabParams(nextProps.gender, nextProps.type, nextProps.major, nextProps.minor, 0)
-      this._getCategoryTabDetail(params)
+    if (nextProps.tag !== this.props.tag) {
+      this.setState({bookLists: [], total: 0})
+      let params = this._setTabParams(nextProps.duration, nextProps.sort, nextProps.tag, nextProps.gender, 0)
+      this._getBookListTabDetail(params)
     }
   }
 
-  _getCategoryTabDetail(params) {
-    if (this.state.bookList.length === 0) {
+  _getBookListTabDetail(params) {
+    if (this.state.bookLists.length === 0) {
       this.setState({isLoading: true})
     } else {
       this.setState({isLoadingMore: true})
     }
-    request.get(api.DISCOVER_CATEGORY_BOOKS, params)
+    request.get(api.DISCOVER_BOOK_LIST, params)
       .then((data) => {
         if (data.ok) {
-          if (this.state.bookList.length === 0) {
+          if (this.state.bookLists.length === 0) {
             this.setState({
               isLoading: false,
-              bookList: data.books,
+              bookLists: data.bookLists,
               total: data.total
             })
           } else {
             this.setState({
               isLoadingMore: false,
-              bookList: this.state.bookList.concat(data.books),
+              bookLists: this.state.bookLists.concat(data.bookLists),
               total: data.total
             })
           }
-          
         } else {
           this.setState({
             isLoading: false,
@@ -96,32 +100,24 @@ export default class CategoryDetailTab extends Component {
       })
   }
 
-  _setTabParams(gender, type, major, minor, start) {
-    return {gender: gender, type: type, major: major, start: start, minor: minor, limit: 20}
-  }
-
   _back() {
     this.props.navigator.pop()
   }
 
   _showMoreItem() {
-    if(this.state.bookList.length === 0 || this.state.isLoading || this.state.isLoadingMore || this.state.bookList.length === this.state.total){
+    if(this.state.bookLists.length === 0 || this.state.isLoading || this.state.isLoadingMore || this.state.bookLists.length === this.state.total){
       return
     }
-    let params = this._setTabParams(this.props.gender, this.props.type, this.props.major, this.props.minor, this.state.bookList.length)
-    this._getCategoryTabDetail(params)
+    let params = this._setTabParams(this.props.duration, this.props.sort, this.props.tag, this.props.gender, this.state.bookLists.length)
+    this._getBookListTabDetail(params)
   }
 
-  /**
-   * 跳转书的介绍页面
-   * @param {string} id 书的信息
-   */
-  _goToBookDetail(id) {
+  _goToBookListDetail(rowData) {
     this.props.navigator.push({
-      name: 'bookDetail',
-      component: BookDetail,
+      name: 'bookListDetail',
+      component: BookListDetail,
       params: {
-        bookId: id
+        bookListId: rowData._id
       }
     })
   }
@@ -130,7 +126,7 @@ export default class CategoryDetailTab extends Component {
     return (
       <TouchableOpacity 
         activeOpacity={0.5}
-        onPress={() => this._goToBookDetail(rowData._id)}>
+        onPress={() => this._goToBookListDetail(rowData)}>
         <View style={styles.item}>
           <Image 
             style={styles.itemImage}
@@ -140,9 +136,9 @@ export default class CategoryDetailTab extends Component {
             />
           <View style={styles.itemBody}>
             <Text style={styles.itemTitle}>{rowData.title}</Text>
-            <Text style={styles.itemDesc}>{rowData.author + ' | ' + rowData.majorCate}</Text>
-            <Text style={styles.itemDesc} numberOfLines={1}>{rowData.shortIntro}</Text>
-            <Text style={styles.itemDesc}>{rowData.latelyFollower + '再追 | ' + rowData.retentionRatio + '%人留存'}</Text>
+            <Text style={styles.itemDesc}>{rowData.author}</Text>
+            <Text style={styles.itemDesc} numberOfLines={1}>{rowData.desc}</Text>
+            <Text style={styles.itemDesc}>{'共' + rowData.bookCount + '本书 | ' + rowData.collectorCount + '人收藏'}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -150,10 +146,10 @@ export default class CategoryDetailTab extends Component {
   }
 
   renderFooter() {
-    if (this.state.bookList.length === 0 || this.state.isLoading) {
+    if (this.state.bookLists.length === 0 || this.state.isLoading) {
       return null
     }
-    if (this.state.bookList.length < this.state.total) {
+    if (this.state.bookLists.length < this.state.total) {
       return (
         <Text style={styles.bookListFooter}>正在加载更多~~~</Text>
       )
@@ -172,7 +168,7 @@ export default class CategoryDetailTab extends Component {
           :
             <ListView
               enableEmptySections={true}
-              dataSource={ds.cloneWithRows(this.state.bookList)}
+              dataSource={ds.cloneWithRows(this.state.bookLists)}
               onEndReached={this._showMoreItem.bind(this)}
               onEndReachedThreshold={30}
               renderRow={this.renderBookList.bind(this)}
@@ -191,6 +187,12 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1
+  },
+  listHeader: {
+    width: Dimen.window.width,
+    margin: 14,
+    fontSize: config.css.fontSize.appTitle,
+    color: config.css.fontColor.title,
   },
   item: {
     paddingTop: 10,

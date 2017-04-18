@@ -18,7 +18,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  Modal
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -41,13 +42,14 @@ export default class CategoryDetail extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      categoryList: null,
-      minor: ''
+      categoryList: [],
+      minor: '',
+      toShow: false
     }
   }
 
   componentDidMount() {
-    const categoryList = this.props.categoryListSelected
+    const categoryList = this._stringArrayToObjectArray(this.props.categoryListSelected)
     this.setState({categoryList: categoryList})
   }
 
@@ -55,8 +57,54 @@ export default class CategoryDetail extends Component {
     this.props.navigator.pop()
   }
 
-  _chooseMinor() {
-    this.setState({minor: '东方玄幻'})
+  _chooseMinor(obj) {
+    if (obj.name === 'major') {
+      this.setState({minor: '', toShow: false})
+    } else {
+      this.setState({minor: obj.value, toShow: false})
+    }
+  }
+
+  _stringArrayToObjectArray(temp) {
+    let array = new Array()
+    let o1 = new Object()
+    o1.name = 'major'
+    o1.value = temp.major
+    array.push(o1)
+    for (let i = 0; i < temp.mins.length; i++) {
+      let element = temp.mins[i];
+      let o = new Object()
+      o.name = 'mins'
+      o.value = element
+      array.push(o)
+    }
+    return array
+  }
+  
+  _closeModal() {
+    this.setState({toShow: false})
+  }
+
+  _showChooseBox() {
+    this.setState({toShow: true})
+  }
+
+  renderList(array) {
+    var items = []
+    if (array) {
+      for (var i = 0; i < array.length; i++) {
+        let element = array[i]
+        items.push(
+          <TouchableOpacity 
+            key={i}
+            activeOpacity={0.5}
+            onPress={() => this._chooseMinor(element)}>
+            <Text style={styles.chooseItem}>{element.value}</Text>
+          </TouchableOpacity>
+        )
+      }
+    }
+    return items
   }
 
   render() {
@@ -74,7 +122,7 @@ export default class CategoryDetail extends Component {
             name='ios-stats-outline'
             style= {styles.headerIcon}
             size={25}
-            onPress={this._chooseMinor.bind(this)}
+            onPress={this._showChooseBox.bind(this)}
             color={config.css.color.appBlack}/>
         </View>
         <ScrollableTabView
@@ -110,6 +158,21 @@ export default class CategoryDetail extends Component {
             tabLabel='完结' 
             navigator={this.props.navigator} />
         </ScrollableTabView>
+        <Modal
+          visible={this.state.toShow}
+          animationType = {'none'}
+          transparent = {true}>
+          <TouchableOpacity 
+            style={styles.modal} 
+            activeOpacity={1}
+            onPress={() => this._closeModal()}>
+            <View style={styles.listView} >
+              {this.renderList(this.state.categoryList).map((item, i) => {
+                return item
+              })}
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </View>
     )
   }
@@ -136,5 +199,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: config.css.fontColor.title,
     fontSize: config.css.fontSize.appTitle
-  }
+  },
+  modal: {
+    flex: 1, 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  },
+  listView: {
+    backgroundColor: config.css.color.white,
+    marginTop: config.css.headerHeight + 30, 
+    marginLeft: Dimen.window.width / 2 + 60
+  },
+  chooseItem: {
+    width: Dimen.window.width / 2 - 60,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    backgroundColor: config.css.color.appBackground,
+    borderColor: config.css.color.line,
+    borderWidth: 1
+  },
 })

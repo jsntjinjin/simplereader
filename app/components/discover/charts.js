@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
 import ChartsDetail from './chartsDetail'
+import ChartsDetailOther from './chartsDetailOther'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
@@ -55,6 +56,15 @@ class Charts extends Component {
   }
 
   _goToChartsDetail(rowData) {
+    if (rowData.collapse) {
+      this.props.navigator.push({
+        name: 'chartsDetailOther',
+        component: ChartsDetailOther,
+        params: {
+          chartsItem: rowData
+        }
+      })
+    } else {
       this.props.navigator.push({
         name: 'chartsDetail',
         component: ChartsDetail,
@@ -62,8 +72,9 @@ class Charts extends Component {
           chartsItem: rowData
         }
       })
+    }
   }
- 
+
   renderMainItem(rowData) {
     return (
       <TouchableOpacity 

@@ -56,6 +56,10 @@ export default class SelectionTabs extends Component {
     this.props.selectItem(this.state.selection)
   }
 
+  _closeModal() {
+    this.setState({showList: false})
+  }
+
   renderList(array) {
     var items = []
     if (array) {
@@ -109,15 +113,18 @@ export default class SelectionTabs extends Component {
         })}
         <Modal
           visible={this.state.showList}
-          animationType = {'none'}
+          animationType = {'slide'}
           transparent = {true}>
-          <View style={styles.modal}>
+          <TouchableOpacity 
+            style={styles.modal}
+            activeOpacity={1}
+            onPress={() => this._closeModal()}>
             <View style={styles.listView}>
               {this.renderList(this.props.tabArray[this.state.key]).map((item, i) => {
                 return item
               })}
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
       </View>
     )
@@ -142,14 +149,10 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1, 
     backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-    justifyContent: 'center',
+    marginTop: config.css.headerHeight + 30,
   },
   listView: {
     backgroundColor: config.css.color.white,
-    marginLeft:20,
-    marginRight: 20,
-    paddingLeft: 20,
-    paddingRight: 20
   },
   autoItem: {
     height: 30, 
