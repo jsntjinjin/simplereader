@@ -13,6 +13,7 @@ import {
 
 import CommonItemForTab from '../../weight/commonItemForTab'
 import MyBookList from '../mine/myBookList'
+import MyFattenList from '../mine/myFattenList'
 import config from '../../common/config'
 
 export default class Mine extends Component {
@@ -34,11 +35,19 @@ export default class Mine extends Component {
     })
   }
 
+  _goToFatten() {
+    this.props.navigator.push({
+      name: 'myFattenList',
+      component: MyFattenList
+    })
+  }
+
   render() {
     return (
       <View style={styles.body}>
         <CommonItemForTab title={'我的书单'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToMyBookList()}/>
-        {/*<View style={styles.line}/>*/}
+        <View style={styles.line}/>
+        <CommonItemForTab title={'书籍养肥区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToFatten()}/>
       </View>
     )
   }

@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import BookReviewDetail from '../community/bookReviewDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
+import {dateFormat} from '../../utils/formatUtil'
 import api from '../../common/api'
 import {bookReviewList} from '../../actions/bookCommunityAction'
 import SelectionTabs from '../../weight/selectionTabs'
@@ -90,7 +91,7 @@ class BookReviewTab extends Component {
           <View style={styles.itemBody}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10}}>
               <Text style={styles.itemAuthor}>{rowData.author.nickname + ' lv.' + rowData.author.lv}</Text>
-              <Text style={styles.itemTime}>{rowData.updated}</Text>
+              <Text style={styles.itemTime}>{dateFormat(rowData.updated)}</Text>
             </View>
             <Text style={styles.itemTitle}>{rowData.title}</Text>
             <StarLevel rating={rowData.rating}/>

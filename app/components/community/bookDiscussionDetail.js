@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
+import {dateFormat} from '../../utils/formatUtil'
 import api from '../../common/api'
 import {bookDiscussionDetail, 
   bookDiscussionDetailCommentBest, 
@@ -103,7 +104,7 @@ class BookDiscussionDetail extends Component {
             <Text style={styles.itemDesc}>{rowData.floor + '楼'}</Text>
             <Text style={styles.itemAuthor}>{rowData.author.nickname + ' lv.' + rowData.author.lv}</Text>
             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 14}}>
-              <Text style={styles.itemDesc}>{rowData.created}</Text>
+              <Text style={styles.itemDesc}>{dateFormat(rowData.created)}</Text>
             </View>
           </View>
           <Text style={styles.itemTitle}>{rowData.content}</Text>
@@ -127,7 +128,7 @@ class BookDiscussionDetail extends Component {
                 />
               <View style={styles.authorBody}>
                 <Text style={styles.authorTitle}>{bookDiscussion.bookDiscussionDetail.author.nickname}</Text>
-                <Text style={styles.authorCreateTime}>{bookDiscussion.bookDiscussionDetail.created}</Text>
+                <Text style={styles.authorCreateTime}>{dateFormat(bookDiscussion.bookDiscussionDetail.created)}</Text>
               </View>
             </View>
             <Text style={styles.detailTitle}>{bookDiscussion.bookDiscussionDetail.title}</Text>

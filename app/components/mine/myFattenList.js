@@ -1,9 +1,8 @@
 /*
- * description: 单个榜单详情(其他)
+ * description: 我的收藏书单页面
  * author: 麦芽糖
- * time: 2017年04月06日11:56:52
+ * time: 2017年04月10日10:47:58
  */
-
 
 import React, { Component } from 'react'
 import {
@@ -17,75 +16,72 @@ import {
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
-import { connect } from 'react-redux'
 
+import api from '../../common/api'
+import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
-import api from '../../common/api'
-import {chartsDetail} from '../../actions/chartsAction'
-import BookDetail from '../bookDetail'
+import {dateFormat} from '../../utils/formatUtil'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-class ChartsDetailOther extends Component {
+export default class MyFattenList extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      
+      myBookList: []
     }
   }
 
   componentDidMount() {
-    const {dispatch} = this.props
-    dispatch(chartsDetail(this.props.chartsItem._id))
+    this._getMyBookList()
   }
 
   _back() {
     this.props.navigator.pop()
   }
 
-  /**
-   * 跳转书籍详情
-   * @param {string} bookId 书籍id
-   */
-  _goToChartsDetail(bookId) {
-      this.props.navigator.push({
-        name: 'bookDetail',
+  _getMyBookList() {
+    var bookList = realm.objects('HistoryBook').filtered('isToShow = 2').sorted('sortNum', true)
+    this.setState({myBookList: bookList})
+  }
+
+  _readBook(bookId) {
+    this.props.navigator.push({
+      name: 'bookDetail',
         component: BookDetail,
         params: {
           bookId: bookId
         }
-      })
+    })
   }
 
-  renderMainItem(rowData) {
+  renderBookList(rowData) {
     return (
       <TouchableOpacity 
         activeOpacity={0.5}
-        onPress={() => this._goToChartsDetail(rowData._id)}>
+        onPress={() => this._readBook(rowData.bookId)}>
         <View style={styles.item}>
           <Image 
             style={styles.itemImage}
-            source={rowData.cover 
-              ? {uri: (api.IMG_BASE_URL + rowData.cover)} 
+            source={rowData.bookUrl 
+              ? {uri: (api.IMG_BASE_URL + rowData.bookUrl)} 
               : require('../../imgs/splash.jpg')}
             />
           <View style={styles.itemBody}>
-            <Text style={styles.itemTitle}>{rowData.title}</Text>
-            <Text style={styles.itemDesc}>{rowData.author + ' | ' + rowData.cat ? rowData.cat : '未知'}</Text>
-            <Text style={styles.itemDesc} numberOfLines={1}>{rowData.shortIntro}</Text>
+            <Text style={styles.itemTitle}>{rowData.bookName}</Text>
             <Text style={styles.itemDesc}>{
-              rowData.latelyFollower + '在追 | ' + rowData.retentionRatio + '%读者留存'}
+              dateFormat(rowData.lastChapterTime) + ' : ' + rowData.lastChapterTitle}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     )
   }
- 
+
   render() {
-    const {charts} = this.props
+    console.log('myBookList', this.state.myBookList)
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -95,21 +91,16 @@ class ChartsDetailOther extends Component {
             size={25}
             color={config.css.color.appBlack}
             onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>{this.props.chartsItem.title}</Text>
-          <Icon 
-            name='ios-cloud-download-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appMainColor}/>
+          <Text style={styles.headerText}>书籍养肥区</Text>
         </View>
-        {charts.isLoadingDetail ? 
-            <Text style={[styles.body]}>正在加载中~~~</Text>
-          :
-            <ListView 
-              enableEmptySections={true}
+        {this.state.myBookList ?
+            <ListView
               style={styles.body}
-              dataSource={ds.cloneWithRows(charts.chartsDetailBooks)}
-              renderRow={this.renderMainItem.bind(this)}/>
+              enableEmptySections={true}
+              dataSource={ds.cloneWithRows(this.state.myBookList)}
+              renderRow={this.renderBookList.bind(this)}/>
+          : 
+            <Text style={styles.body}>暂无数据</Text>
         }
       </View>
     )
@@ -143,7 +134,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
-    height: 100,
+    height: 80,
     width: Dimen.window.width,
     borderTopWidth: 1,
     borderTopColor: config.css.color.line
@@ -168,16 +159,6 @@ const styles = StyleSheet.create({
   itemDesc: {
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.desc,
-    marginTop: 3,
-    marginRight: 14
+    marginTop: 3
   }
 })
-
-function mapStateToProps(store) {
-  const { charts } = store
-  return {
-    charts
-  }
-}
-
-export default connect(mapStateToProps)(ChartsDetailOther)

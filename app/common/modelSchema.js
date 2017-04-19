@@ -17,7 +17,7 @@ const HistoryBookSchema = {
     historyChapterNum: 'int',
     saveTime: 'date',
     sortNum: 'int',
-    isToShow: 'bool'
+    isToShow: 'int' // 0: 不显示 1: 书架 2: 养肥区
   }
 }
 

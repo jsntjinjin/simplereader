@@ -25,6 +25,7 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import request from '../../utils/httpUtil'
+import {wordCountFormat} from '../../utils/formatUtil'
 import Toast from '../../weight/toast'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
@@ -136,7 +137,7 @@ export default class BookListDetail extends Component {
             <View style={styles.itemTopBody}>
               <Text style={styles.itemTitle}>{rowData.book.title}</Text>
               <Text style={styles.itemDesc}>{rowData.book.author}</Text>
-              <Text style={styles.itemDesc}>{rowData.book.latelyFollower + '人在追 | ' + rowData.book.wordCount + '字'}</Text>
+              <Text style={styles.itemDesc}>{rowData.book.latelyFollower + '人在追 | ' + wordCountFormat(rowData.book.wordCount)}</Text>
             </View>
           </View>
           <View style={styles.itemLine}></View>

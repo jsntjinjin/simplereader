@@ -21,7 +21,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
 import BookDetail from './bookDetail'
-import BookCommunity from '../book/bookCommunity'
+import BookCommunity from './book/bookCommunity'
 import request from '../utils/httpUtil'
 import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'

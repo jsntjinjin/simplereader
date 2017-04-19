@@ -80,7 +80,7 @@ export default class ChartsDetailTab extends Component {
     return (
       <TouchableOpacity 
         activeOpacity={0.5}
-        onPress={() => this._goToChartsDetail(rowData._id)}>
+        onPress={() => this._goToBookDetail(rowData._id)}>
         <View style={styles.item}>
           <Image 
             style={styles.itemImage}

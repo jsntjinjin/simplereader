@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import BookHelpDetail from './bookHelpDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
+import {dateFormat} from '../../utils/formatUtil'
 import api from '../../common/api'
 import {bookHelpList} from '../../actions/bookHelpAction'
 import SelectionTabs from '../../weight/selectionTabs'
@@ -91,7 +92,7 @@ class BookHelp extends Component {
           <View style={styles.itemBody}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10}}>
               <Text style={styles.itemAuthor}>{rowData.author.nickname + ' lv.' + rowData.author.lv}</Text>
-              <Text style={styles.itemTime}>{rowData.created}</Text>
+              <Text style={styles.itemTime}>{dateFormat(rowData.created)}</Text>
             </View>
             <Text style={styles.itemTitle}>{rowData.title}</Text>
             <View style={{flexDirection: 'row', marginBottom: 10, alignItems: 'center'}}>

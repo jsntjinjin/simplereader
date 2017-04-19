@@ -22,6 +22,7 @@ import BookDetail from '../bookDetail'
 import Search from '../search'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
+import {dateFormat} from '../../utils/formatUtil'
 import StarLevel from '../../weight/starLevel'
 import api from '../../common/api'
 import {bookHelpDetail, 
@@ -116,7 +117,7 @@ class BookHelpDetail extends Component {
             <Text style={styles.itemDesc}>{rowData.floor + '楼'}</Text>
             <Text style={styles.itemAuthor}>{rowData.author.nickname + ' lv.' + rowData.author.lv}</Text>
             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 14}}>
-              <Text style={styles.itemDesc}>{rowData.created}</Text>
+              <Text style={styles.itemDesc}>{dateFormat(rowData.created)}</Text>
             </View>
           </View>
           <Text style={styles.itemTitle}>{rowData.content}</Text>
@@ -140,7 +141,7 @@ class BookHelpDetail extends Component {
                 />
               <View style={styles.authorBody}>
                 <Text style={styles.authorTitle}>{bookHelp.bookHelpDetail.author.nickname}</Text>
-                <Text style={styles.authorCreateTime}>{bookHelp.bookHelpDetail.created}</Text>
+                <Text style={styles.authorCreateTime}>{dateFormat(bookHelp.bookHelpDetail.created)}</Text>
               </View>
             </View>
             <Text style={styles.detailTitle}>{bookHelp.bookHelpDetail.title}</Text>

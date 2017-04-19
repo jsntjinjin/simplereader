@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import BookReviewDetail from './bookReviewDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
+import {dateFormat} from '../../utils/formatUtil'
 import api from '../../common/api'
 import {bookReviewList} from '../../actions/bookReviewAction'
 import SelectionTabs from '../../weight/selectionTabs'
@@ -102,7 +103,7 @@ class BookReview extends Component {
           <View style={styles.itemBody}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10}}>
               <Text style={styles.itemAuthor}>{rowData.book.title + ' [' + this._checkType(rowData.book.type) + ']'}</Text>
-              <Text style={styles.itemTime}>{rowData.created}</Text>
+              <Text style={styles.itemTime}>{dateFormat(rowData.created)}</Text>
             </View>
             <Text style={styles.itemTitle}>{rowData.title}</Text>
             <View style={{flexDirection: 'row', marginBottom: 10, alignItems: 'center'}}>

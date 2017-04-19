@@ -27,6 +27,7 @@ import BookReviewDetail from './community/bookReviewDetail'
 import StarLevel from '../weight/starLevel'
 import TagsGroup from '../weight/tagsGroup'
 import request from '../utils/httpUtil'
+import {wordCountFormat, dateFormat} from '../utils/formatUtil'
 import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'
 import config from '../common/config'
@@ -104,8 +105,8 @@ export default class BookDetail extends Component {
    */
   hasSaveBook(bookId) {
     var book = realm.objectForPrimaryKey('HistoryBook', bookId)
-    this.setState({hasSaveBook: book ? book.isToShow : false})
-    console.log('是否已经保存过当前书籍', book ? book.isToShow : false)
+    this.setState({hasSaveBook: book ? (book.isToShow === 0 ? false : true) : false})
+    console.log('是否已经保存过当前书籍', book ? book.isToShow : 0)
   }
 
   /**
@@ -116,7 +117,7 @@ export default class BookDetail extends Component {
     var book = realm.objectForPrimaryKey('HistoryBook', bookDetail._id)
     realm.write(() => {
       if(book) {
-        realm.create('HistoryBook', {bookId: bookDetail._id, isToShow: true}, true)
+        realm.create('HistoryBook', {bookId: bookDetail._id, isToShow: 1}, true)
       } else {
         realm.create('HistoryBook', {
           bookId: bookDetail._id,
@@ -127,7 +128,7 @@ export default class BookDetail extends Component {
           lastChapterTime: bookDetail.updated,
           saveTime: new Date(),
           sortNum: books && books.length > 0 ? books[books.length - 1].sortNum + 1 : 0,
-          isToShow: true
+          isToShow: 1
         });
       }
     })
@@ -139,7 +140,7 @@ export default class BookDetail extends Component {
   deleteBookToRealm(bookDetail) {
     let book = realm.objectForPrimaryKey('HistoryBook', bookDetail._id)
     realm.write(() => {
-      realm.create('HistoryBook', {bookId: bookDetail._id, isToShow: false}, true)
+      realm.create('HistoryBook', {bookId: bookDetail._id, isToShow: 0}, true)
     })
   }
 
@@ -358,9 +359,9 @@ export default class BookDetail extends Component {
                 <Text style={styles.bookDetailMidText}> | </Text>
                 <Text style={styles.bookDetailMidText}>{this.state.bookDetail.minorCate}</Text>
                 <Text style={styles.bookDetailMidText}> | </Text>
-                <Text style={styles.bookDetailMidText}>{this.state.bookDetail.wordCount + '字'}</Text>
+                <Text style={styles.bookDetailMidText}>{wordCountFormat(this.state.bookDetail.wordCount)}</Text>
               </View>
-              <Text style={styles.bookDetailMidText}>{'更新时间: ' + this.state.bookDetail.updated}</Text>
+              <Text style={styles.bookDetailMidText}>{'更新时间: ' + dateFormat(this.state.bookDetail.updated)}</Text>
             </View>
           </View>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginLeft: 14, marginRight: 14}}>

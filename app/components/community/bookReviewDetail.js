@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
+import {dateFormat} from '../../utils/formatUtil'
 import StarLevel from '../../weight/starLevel'
 import api from '../../common/api'
 import {bookReviewDetail, 
@@ -115,7 +116,7 @@ class BookReviewDetail extends Component {
             <Text style={styles.itemDesc}>{rowData.floor + '楼'}</Text>
             <Text style={styles.itemAuthor}>{rowData.author.nickname + ' lv.' + rowData.author.lv}</Text>
             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginRight: 14}}>
-              <Text style={styles.itemDesc}>{rowData.created}</Text>
+              <Text style={styles.itemDesc}>{dateFormat(rowData.created)}</Text>
             </View>
           </View>
           <Text style={styles.itemTitle}>{rowData.content}</Text>
@@ -139,7 +140,7 @@ class BookReviewDetail extends Component {
                 />
               <View style={styles.authorBody}>
                 <Text style={styles.authorTitle}>{bookReview.bookReviewDetail.author.nickname}</Text>
-                <Text style={styles.authorCreateTime}>{bookReview.bookReviewDetail.created}</Text>
+                <Text style={styles.authorCreateTime}>{dateFormat(bookReview.bookReviewDetail.created)}</Text>
               </View>
             </View>
             <Text style={styles.detailTitle}>{bookReview.bookReviewDetail.title}</Text>
