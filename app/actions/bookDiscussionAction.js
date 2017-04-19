@@ -71,12 +71,12 @@ export let bookDiscussionDetailCommentList = (id, params, isFirst, oldList) => {
         if (data.ok) {
           dispatch(getBookDiscussionCommentListSuccess(data.comments, oldList))
         } else {
-          dispatch(getBookDiscussionCommentListSuccess(null))
+          dispatch(getBookDiscussionCommentListSuccess([], oldList))
         }
       })
       .catch((err) => {
         console.log(err)
-        dispatch(getBookDiscussionCommentListSuccess(null))
+        dispatch(getBookDiscussionCommentListSuccess([], oldList))
       })
   }
 }

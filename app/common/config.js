@@ -91,5 +91,10 @@ module.exports = {
     {name: '古代言情', type: 'gdyq'},
     {name: '幻想言情', type: 'hxyq'},
     {name: '耽美同人', type: 'dmtr'},
+  ],
+  bookDetailSort: [
+    {name: '默认排序', sort: 'updated'}, 
+    {name: '最新发布', sort: 'created'}, 
+    {name: '最多评论', sort: 'comment-count'},
   ]
 }

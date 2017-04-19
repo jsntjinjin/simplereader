@@ -14,6 +14,7 @@ import categoryList from './categoryListReducer'
 import bookDiscussion from './bookDiscussionReducer'
 import bookReview from './bookReviewReducer'
 import bookHelp from './bookHelpReducer'
+import bookCommunity from './bookCommunityReducer'
 
 const rootReducer = combineReducers({
   readPlatform,
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   categoryList,
   bookDiscussion,
   bookReview,
-  bookHelp
+  bookHelp,
+  bookCommunity
 })
 
 export default rootReducer

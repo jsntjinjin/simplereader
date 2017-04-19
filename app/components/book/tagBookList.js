@@ -1,7 +1,7 @@
 /*
- * description: 分类详情的tab页面
+ * description: 标签书单
  * author: 麦芽糖
- * time: 2017年04月11日11:38:04
+ * time: 2017年04月19日09:33:03
  */
 
 import React, { Component } from 'react'
@@ -25,58 +25,40 @@ import api from '../../common/api'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-export default class CategoryDetailTab extends Component {
-
-  static propTypes = {
-    gender: React.PropTypes.string,
-    type: React.PropTypes.string,
-    major: React.PropTypes.string,
-    minor: React.PropTypes.string
-  }
+export default class TagBookList extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
       isLoading: false,
       isLoadingMore: false,
-      bookList: [],
-      total: 0
+      bookList: []
     }
   }
 
   componentDidMount() {
-    let params = this._setTabParams(this.props.gender, this.props.type, this.props.major, this.props.minor, 0)
-    this._getCategoryTabDetail(params)
+    let params = this._setParams(this.props.tag, 0)
+    this._getBookListDetail(params)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.minor !== this.props.minor) {
-      this.setState({bookList: [], total: 0})
-      let params = this._setTabParams(nextProps.gender, nextProps.type, nextProps.major, nextProps.minor, 0)
-      this._getCategoryTabDetail(params)
-    }
-  }
-
-  _getCategoryTabDetail(params) {
+  _getBookListDetail(params) {
     if (this.state.bookList.length === 0) {
       this.setState({isLoading: true})
     } else {
       this.setState({isLoadingMore: true})
     }
-    request.get(api.DISCOVER_CATEGORY_BOOKS, params)
+    request.get(api.BOOK_TAG_BOOK_LIST, params)
       .then((data) => {
         if (data.ok) {
           if (this.state.bookList.length === 0) {
             this.setState({
               isLoading: false,
-              bookList: data.books,
-              total: data.total
+              bookList: data.books
             })
           } else {
             this.setState({
               isLoadingMore: false,
-              bookList: this.state.bookList.concat(data.books),
-              total: data.total
+              bookList: this.state.bookList.concat(data.books)
             })
           }
           
@@ -96,8 +78,8 @@ export default class CategoryDetailTab extends Component {
       })
   }
 
-  _setTabParams(gender, type, major, minor, start) {
-    return {gender: gender, type: type, major: major, start: start, minor: minor, limit: 20}
+  _setParams(tag, start) {
+    return {tags: tag, start: start, limit: 20}
   }
 
   _back() {
@@ -105,11 +87,11 @@ export default class CategoryDetailTab extends Component {
   }
 
   _showMoreItem() {
-    if(this.state.bookList.length === 0 || this.state.isLoading || this.state.isLoadingMore || this.state.bookList.length === this.state.total){
+    if(this.state.bookList.length === 0 || this.state.isLoading || this.state.isLoadingMore){
       return
     }
-    let params = this._setTabParams(this.props.gender, this.props.type, this.props.major, this.props.minor, this.state.bookList.length)
-    this._getCategoryTabDetail(params)
+    let params = this._setParams(this.props.tag, this.state.bookList.length)
+    this._getBookListDetail(params)
   }
 
   /**
@@ -142,7 +124,7 @@ export default class CategoryDetailTab extends Component {
             <Text style={styles.itemTitle}>{rowData.title}</Text>
             <Text style={styles.itemDesc}>{rowData.author + ' | ' + rowData.majorCate}</Text>
             <Text style={styles.itemDesc} numberOfLines={1}>{rowData.shortIntro}</Text>
-            <Text style={styles.itemDesc}>{rowData.latelyFollower + '在追 | ' + rowData.retentionRatio + '%人留存'}</Text>
+            <Text style={styles.itemDesc}>{rowData.latelyFollower + '在追 | ' + rowData.retentionRatio + '%人留存 | ' + rowData.author + '著'}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -153,20 +135,28 @@ export default class CategoryDetailTab extends Component {
     if (this.state.bookList.length === 0 || this.state.isLoading) {
       return null
     }
-    if (this.state.bookList.length < this.state.total) {
-      return (
-        <Text style={styles.bookListFooter}>正在加载更多~~~</Text>
-      )
-    } else {
-      return (
-        <Text style={styles.bookListFooter}>没有更多书单了~~~</Text>
-      )
-    }
+    return (
+      <Text style={styles.bookListFooter}>正在加载更多~~~</Text>
+    )
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <View style={styles.header}>
+          <Icon 
+            name='ios-arrow-back-outline'
+            style= {styles.headerIcon}
+            size={25}
+            color={config.css.color.appBlack}
+            onPress={this._back.bind(this)}/>
+          <Text style={styles.headerText}>{this.props.tag}</Text>
+          <Icon 
+            name='ios-cloud-download-outline'
+            style= {styles.headerIcon}
+            size={25}
+            color={config.css.color.appMainColor}/>
+        </View>
         {this.state.isLoading ? 
             <Text style={{flex: 1, textAlign: 'center'}}>正在加载中~~~</Text>
           :
@@ -188,6 +178,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: config.css.color.appBackground,
     alignItems: 'stretch'
+  },
+  header: {
+    height: config.css.headerHeight,
+    paddingTop: config.css.statusBarHeight,
+    backgroundColor: config.css.color.appMainColor,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  headerIcon: {
+    marginLeft: 14,
+    marginRight: 14
+  },
+  headerText: {
+    flex: 1,
+    textAlign: 'center',
+    color: config.css.fontColor.title,
+    fontSize: config.css.fontSize.appTitle
   },
   body: {
     flex: 1
@@ -229,3 +236,4 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   }
 })
+

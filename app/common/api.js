@@ -11,6 +11,7 @@ module.exports = {
   API_BASE_URL: API_BASE_URL,
   IMG_BASE_URL: IMG_BASE_URL,
 
+  //GET 首次进入APP，选择性别后，获取推荐列表 url?gender='male'
   BOOK_RECOMMEND: API_BASE_URL + '/book/recommend',
   // 获取正版源(若有) 与 盗版源
   BOOK_ABOOK_SOURCE: API_BASE_URL + '/atoc', 
@@ -27,7 +28,38 @@ module.exports = {
   BOOK_HOT_REVIEW: API_BASE_URL + '/post/review/best-by-book',
   // GET 根据id推荐书单 url?limit=3 
   BOOK_RECOMMEND_BOOK_LIST: (bookId) => {return API_BASE_URL + '/book-list/' + bookId + '/recommend'}, 
-  
+  // GET 通过作者查询书名 url?author=''
+  BOOK_AUTHOR_BOOK_LIST: API_BASE_URL + '/book/accurate-search', 
+  /**
+   * GET 根据标签查询书籍列表
+   * @param tags
+   * @param start
+   * @param limit
+   */
+  BOOK_TAG_BOOK_LIST: API_BASE_URL + '/book/by-tags', 
+  /**
+   * 获取书籍详情讨论列表
+   * @param book  bookId
+   * @param sort  updated(默认排序)
+   *              created(最新发布)
+   *              comment-count(最多评论)
+   * @param type  normal
+   *              vote
+   * @param start 0
+   * @param limit 20
+   */
+  BOOK_DISCUSSION_LIST: API_BASE_URL + '/post/by-book',
+  /**
+   * 获取书籍详情书评列表
+   * @param book  bookId
+   * @param sort  updated(默认排序)
+   *              created(最新发布)
+   *              comment-count(最多评论)
+   * @param start 0
+   * @param limit 20
+   */
+  BOOK_REVIEW_LIST: API_BASE_URL + '/post/review/by-book',
+
   // ----------------read platform----------------
   // GET 获取书的章节信息 http://api.zhuishushenqi.com/mix-atoc/5569ba444127a49f1fa99d29?view=chapters
   READ_BOOK_CHAPTER_LIST: (bookId) => {return API_BASE_URL + '/mix-atoc/' + bookId + '?view=chapters'}, 
@@ -150,7 +182,5 @@ module.exports = {
   // GET 关键字补全
   SEARCH_AUTO_COMPLETE: API_BASE_URL + '/book/auto-complete', 
   // GET 书籍查询
-  SEARCH_BOOKS: API_BASE_URL + '/book/fuzzy-search', 
-  // GET 通过作者查询书名
-  SEARCH_BOOKS_FROM_AUTHOR: API_BASE_URL + '/book/accurate-search', 
+  SEARCH_BOOKS: API_BASE_URL + '/book/fuzzy-search',
 }

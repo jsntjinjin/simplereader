@@ -19,7 +19,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons'
 
 import ReadPlatform from './readPlatform'
+import TagBookList from './book/tagBookList'
+import AuthorBookList from './book/authorBookList'
+import BookCommunity from './book/bookCommunity'
 import BookListDetail from './discover/bookListDetail'
+import BookReviewDetail from './community/bookReviewDetail'
 import StarLevel from '../weight/starLevel'
 import TagsGroup from '../weight/tagsGroup'
 import request from '../utils/httpUtil'
@@ -157,10 +161,10 @@ export default class BookDetail extends Component {
   _readBook(book) {
     this.props.navigator.push({
       name: 'readPlatform',
-        component: ReadPlatform,
-        params: {
-          bookId: this.state.bookDetail._id
-        }
+      component: ReadPlatform,
+      params: {
+        bookId: this.state.bookDetail._id
+      }
     })
   }
 
@@ -172,19 +176,38 @@ export default class BookDetail extends Component {
       longInTroLineNumber: this.state.longInTroLineNumber === 2 ? null : 2
     })
   }
-  
-  /**
-   * 进入书籍书评界面
-   */
-  _moreHotReview() {
 
+  /**
+   * 点击作者进入作者booklist页面
+   */
+  _clickAuthor() {
+    this.props.navigator.push({
+      name: 'authorBookList',
+      component: AuthorBookList,
+      params: {
+        author: this.state.bookDetail.author
+      }
+    })
   }
 
   /**
    * 选择tag进入tag推荐书籍页面
    */
-  _checkTag(tag) {
+  _clickTag(tag) {
+    this.props.navigator.push({
+      name: 'tagBookList',
+      component: TagBookList,
+      params: {
+        tag: tag
+      }
+    })
+  }
 
+  /**
+   * 进入书籍书评界面
+   */
+  _moreHotReview() {
+    this._goToBookCommunity(1)
   }
 
   /**
@@ -192,15 +215,33 @@ export default class BookDetail extends Component {
    * @param {string} key 热门书评id
    */
   _reviewDetail(key) {
-    console.log(this.state.hotReview[key]._id)
+    this.props.navigator.push({
+      name: 'bookDiscussionDetail',
+      component: BookReviewDetail,
+      params: {
+        bookReviewId: this.state.hotReview[key]._id
+      }
+    })
   }
 
   /**
    * 进入书籍社区
    */
   _toBookCommunity() {
-    console.log(this.state.bookDetail._id)
+    this._goToBookCommunity(0)
   }
+
+  _goToBookCommunity(page) {
+    this.props.navigator.push({
+      name: 'bookCommunity',
+      component: BookCommunity,
+      params: {
+        bookId: this.state.bookDetail._id,
+        page: page
+      }
+    })
+  }
+  
 
   /**
    * 进入书单详情界面
@@ -313,7 +354,7 @@ export default class BookDetail extends Component {
             <View style={{justifyContent: 'space-around'}}>
               <Text style={{color: config.css.fontColor.title, fontSize: config.css.fontSize.title}}>{this.state.bookDetail.title}</Text>
               <View style={{flexDirection: 'row'}}>
-                <Text style={styles.bookDetailAuthor}>{this.state.bookDetail.author}</Text>
+                <Text style={styles.bookDetailAuthor} onPress={this._clickAuthor.bind(this)}>{this.state.bookDetail.author}</Text>
                 <Text style={styles.bookDetailMidText}> | </Text>
                 <Text style={styles.bookDetailMidText}>{this.state.bookDetail.minorCate}</Text>
                 <Text style={styles.bookDetailMidText}> | </Text>
@@ -364,13 +405,13 @@ export default class BookDetail extends Component {
             </View>
           </View>
           <View style={styles.line}/>
-          <TagsGroup tags={this.state.bookDetail.tags} checkTag={(tag) => this._checkTag(tag)}/>
+          <TagsGroup tags={this.state.bookDetail.tags} checkTag={(tag) => this._clickTag(tag)}/>
           <View style={styles.line}/>
           <Text style={styles.bookDataNumber} numberOfLines={this.state.longInTroLineNumber} onPress={this._showLongInTro.bind(this)}>{this.state.bookDetail.longIntro}</Text>
           <View style={styles.hightLine}/>
           <View style={styles.bookHotReviewHeader}>
             <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>热门书评</Text>
-            <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.title}} onPress={this._moreHotReview}>更多</Text>
+            <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.title}} onPress={this._moreHotReview.bind(this)}>更多</Text>
           </View>
           {this.renderHotReview(this.state.hotReview).map((item, i) => {
             return item

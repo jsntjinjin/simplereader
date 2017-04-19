@@ -21,6 +21,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 
 import BookDetail from './bookDetail'
+import BookCommunity from '../book/bookCommunity'
 import request from '../utils/httpUtil'
 import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'
@@ -52,6 +53,14 @@ class ReadPlatform extends Component {
    * 进入书籍社区
    */
   _toBookCommunity() {
+    this.props.navigator.push({
+      name: 'bookCommunity',
+      component: BookCommunity,
+      params: {
+        bookId: this.props.bookId,
+        page: 0
+      }
+    })
   }
 
   /**
