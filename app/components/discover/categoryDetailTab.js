@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -45,8 +46,10 @@ export default class CategoryDetailTab extends Component {
   }
 
   componentDidMount() {
-    let params = this._setTabParams(this.props.gender, this.props.type, this.props.major, this.props.minor, 0)
-    this._getCategoryTabDetail(params)
+    InteractionManager.runAfterInteractions(()=>{
+      let params = this._setTabParams(this.props.gender, this.props.type, this.props.major, this.props.minor, 0)
+      this._getCategoryTabDetail(params)
+    })
   }
 
   componentWillReceiveProps(nextProps) {

@@ -13,7 +13,8 @@ import {
   StyleSheet,
   ListView,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -45,8 +46,10 @@ export default class Search extends Component {
   componentDidMount() {
     // 请求热词,和获取历史搜索数据
     let searchW = this.props.searchWord
-    this._searchHotWords()
-    this._storageSelectSearchHistory()
+    InteractionManager.runAfterInteractions(()=>{
+      this._searchHotWords()
+      this._storageSelectSearchHistory()
+    })
     if (searchW) {
       this._changeSearchWord(searchW)
     }

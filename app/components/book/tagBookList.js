@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -38,7 +39,9 @@ export default class TagBookList extends Component {
 
   componentDidMount() {
     let params = this._setParams(this.props.tag, 0)
-    this._getBookListDetail(params)
+    InteractionManager.runAfterInteractions(()=>{
+      this._getBookListDetail(params)
+    })
   }
 
   _getBookListDetail(params) {

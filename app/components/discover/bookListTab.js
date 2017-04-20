@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -50,8 +51,10 @@ export default class BookListTab extends Component {
   }
 
   componentDidMount() {
-    let params = this._setTabParams(this.props.duration, this.props.sort, this.props.tag, this.props.gender, 0)
-    this._getBookListTabDetail(params)
+    InteractionManager.runAfterInteractions(()=>{
+      let params = this._setTabParams(this.props.duration, this.props.sort, this.props.tag, this.props.gender, 0)
+      this._getBookListTabDetail(params)
+    })
   }
 
   componentWillReceiveProps(nextProps) {

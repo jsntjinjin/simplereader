@@ -43,32 +43,32 @@ let toYears = (date) => {
 }
 
 let _getDescriptionTimeFromDate = (date) => {
-  let delta = new Date().getTime() - date;
+  let delta = new Date().getTime() - date
   if (delta < 1 * ONE_MINUTE) {
-      let seconds = toSeconds(delta);
-      return parseInt((seconds <= 0 ? 1 : seconds)) + ONE_SECOND_AGO;
+      let seconds = parseInt(toSeconds(delta))
+      return (seconds <= 0 ? 1 : seconds) + ONE_SECOND_AGO;
   }
   if (delta < 45 * ONE_MINUTE) {
-      let minutes = toMinutes(delta);
-      return parseInt((minutes <= 0 ? 1 : minutes)) + ONE_MINUTE_AGO;
+      let minutes = parseInt(toMinutes(delta))
+      return (minutes <= 0 ? 1 : minutes) + ONE_MINUTE_AGO;
   }
   if (delta < 24 * ONE_HOUR) {
-      let hours = toHours(delta);
-      return parseInt((hours <= 0 ? 1 : hours)) + ONE_HOUR_AGO;
+      let hours = parseInt(toHours(delta))
+      return (hours <= 0 ? 1 : hours) + ONE_HOUR_AGO;
   }
   if (delta < 48 * ONE_HOUR) {
       return "昨天";
   }
   if (delta < 30 * ONE_DAY) {
-      let days = toDays(delta);
-      return parseInt((days <= 0 ? 1 : days)) + ONE_DAY_AGO;
+      let days = parseInt(toDays(delta))
+      return (days <= 0 ? 1 : days) + ONE_DAY_AGO;
   }
   if (delta < 12 * 4 * ONE_WEEK) {
-      let months = toMonths(delta);
-      return parseInt((months <= 0 ? 1 : months)) + ONE_MONTH_AGO;
-  } else {
-      let years = toYears(delta);
-      return parseInt((years <= 0 ? 1 : years)) + ONE_YEAR_AGO;
+      let months = parseInt(toMonths(delta))
+      return (months <= 0 ? 1 : months) + ONE_MONTH_AGO;
+  } else { 
+      let years = parseInt(toYears(delta))
+      return (years <= 0 ? 1 : years) + ONE_YEAR_AGO
   }
 }
 
@@ -76,7 +76,8 @@ export let dateFormat = (date) => {
   if (!date) {
     return ''
   } else {
-    return _getDescriptionTimeFromDate(Date.parse(date))
+    let temp = date.replace('T', ' ').split('.')[0]
+    return _getDescriptionTimeFromDate(Date.parse(temp))
   }
 }
 

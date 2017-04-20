@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -30,8 +31,10 @@ class CategoryList extends Component {
 
   componentDidMount() {
     const {dispatch} = this.props
-    dispatch(categoryListBasic())
-    dispatch(categoryListV2())
+    InteractionManager.runAfterInteractions(()=>{
+      dispatch(categoryListBasic())
+      dispatch(categoryListV2())
+    })
   }
 
   _back() {

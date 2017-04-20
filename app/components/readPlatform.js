@@ -14,7 +14,9 @@ import {
   StyleSheet,
   ListView,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Modal,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -33,20 +35,79 @@ class ReadPlatform extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showControlStation: false
+      showControlStation: false,
+      showSaveModal: false
     }
   }
 
   componentDidMount() {
     const {dispatch} = this.props
-    var bookId = this.props.bookId
+    let bookId = this.props.bookId
     let book = realm.objects('HistoryBook').filtered('bookId = "' + bookId + '"')
-    dispatch(bookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0))
-    this._updateHistoryBookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0)
+    InteractionManager.runAfterInteractions(()=>{
+      dispatch(bookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0))
+      this._updateHistoryBookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0)
+    })
   }
 
   _back() {
+    let bookId = this.props.bookId
+    let book = realm.objectForPrimaryKey('HistoryBook', bookId)
+    if (book && book.isToShow !== 0) {
+      this._toPop()
+    } else {
+      this.setState({showSaveModal: true})
+    }
+  }
+
+  _closeModal() {
+    this.setState({showSaveModal: false})
+  }
+
+  _toPop() {
     this.props.navigator.pop()
+  }
+
+  _toSaveAndPop() {
+    const {readPlatform} = this.props
+    let bookId = this.props.bookId
+    let book = realm.objectForPrimaryKey('HistoryBook', bookId)
+    this._closeModal()
+    if (!book || book.isToShow === 0) {
+      this.saveBookToRealm(this.props.bookDetail, readPlatform.chapterNum)
+    }
+    this._toPop()
+  }
+
+  /**
+   * 向数据库中保存当前书籍的记录
+   */
+  saveBookToRealm(bookDetail, chapterNum) {
+    let bookId = this.props.bookId
+    var books = realm.objects('HistoryBook').sorted('sortNum')
+    let book = realm.objectForPrimaryKey('HistoryBook', bookId)
+    realm.write(() => {
+      if (book) {
+        if (book.bookId == books[books.length - 1].bookId) {
+          realm.create('HistoryBook', {bookId: book.bookId, isToShow: 1, historyChapterNum: chapterNum}, true)
+        } else {
+          var sortNum = books[books.length - 1].sortNum + 1
+          realm.create('HistoryBook', {bookId: book.bookId, isToShow: 1, sortNum: books[books.length - 1].sortNum + 1, historyChapterNum: chapterNum}, true)
+        }
+      } else {
+        realm.create('HistoryBook', {
+          bookId: bookDetail._id,
+          bookName: bookDetail.title,
+          bookUrl: bookDetail.cover,
+          lastChapterTitle: bookDetail.lastChapter,
+          historyChapterNum: chapterNum,
+          lastChapterTime: bookDetail.updated,
+          saveTime: new Date(),
+          sortNum: books && books.length > 0 ? books[books.length - 1].sortNum + 1 : 0,
+          isToShow: 1
+        });
+      }
+    })
   }
 
   /**
@@ -238,6 +299,24 @@ class ReadPlatform extends Component {
         :
           null
         }
+        <Modal
+          visible={this.state.showSaveModal}
+          animationType = {'none'}
+          transparent = {true}>
+          <TouchableOpacity 
+            style={styles.modal} 
+            activeOpacity={1}
+            onPress={() => this._closeModal()}>
+            <View style={styles.innerView} >
+              <Text style={styles.modalTitle}>添书</Text>
+              <Text style={styles.modalBody}>是否将本书加入到书架?</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.modalButton} onPress={this._toPop.bind(this)}>不了</Text>
+                <Text style={styles.modalButton} onPress={this._toSaveAndPop.bind(this)}>加入书架</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
       </View>
     )
   }
@@ -281,6 +360,41 @@ const styles = StyleSheet.create({
   controlFooterTitle: {
     color: config.css.fontColor.title,
     fontSize: config.css.fontSize.desc
+  },
+  modal: {
+    flex: 1, 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center'
+  },
+  innerView: {
+    backgroundColor: config.css.color.white,
+    borderWidth: 1,
+    borderColor: config.css.color.line,
+    borderRadius: 4,
+    marginLeft: 20,
+    marginRight: 20,
+    paddingBottom: 10
+  },
+  modalTitle: {
+    fontSize: config.css.fontSize.title,
+    color: config.css.fontColor.title,
+    paddingLeft: 20,
+    paddingTop: 20,
+    paddingBottom: 10
+  },
+  modalBody: {
+    paddingLeft: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    fontSize: config.css.fontSize.desc,
+    color: config.css.fontColor.title,
+  },
+  modalButton: {
+    paddingLeft: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    fontSize: config.css.fontSize.desc,
+    color: config.css.fontColor.appMainColor,
   }
 })
 

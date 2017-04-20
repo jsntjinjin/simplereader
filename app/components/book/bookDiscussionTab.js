@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -39,7 +40,9 @@ class BookDiscussionTab extends Component {
 
   componentDidMount() {
     const {dispatch} = this.props
-    dispatch(bookDiscussionList(this._setParams(this.props.bookId, this.props.sort, 0), true, []))
+    InteractionManager.runAfterInteractions(()=>{
+      dispatch(bookDiscussionList(this._setParams(this.props.bookId, this.props.sort, 0), true, []))
+    })
   }
 
   componentWillReceiveProps(nextProps) {

@@ -13,7 +13,8 @@ import {
   StyleSheet,
   ListView,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -46,15 +47,17 @@ export default class BookDetail extends Component {
   }
 
   componentDidMount() {
-    // var array = this.props.navigator.getCurrentRoutes();
-    // array.forEach(function(element) {
-    //   console.log(element)
-    // }, this);
-    // const {dispatch} = this.props
     var bookId = this.props.bookId
-    this._getBookDetail(bookId)
-    this._getHotReview(bookId)
-    this._getRecommendBookList(bookId)
+    InteractionManager.runAfterInteractions(()=>{
+      this._getBookDetail(bookId)
+      this._getHotReview(bookId)
+      this._getRecommendBookList(bookId)
+      this.hasSaveBook(bookId)
+    })
+  }
+
+  componentWillReceiveProps() {
+    var bookId = this.props.bookId
     this.hasSaveBook(bookId)
   }
 
@@ -164,7 +167,8 @@ export default class BookDetail extends Component {
       name: 'readPlatform',
       component: ReadPlatform,
       params: {
-        bookId: this.state.bookDetail._id
+        bookId: this.state.bookDetail._id,
+        bookDetail: this.state.bookDetail
       }
     })
   }

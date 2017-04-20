@@ -13,7 +13,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -38,7 +39,9 @@ class ChartsDetailOther extends Component {
 
   componentDidMount() {
     const {dispatch} = this.props
-    dispatch(chartsDetail(this.props.chartsItem._id))
+    InteractionManager.runAfterInteractions(()=>{
+      dispatch(chartsDetail(this.props.chartsItem._id))
+    })
   }
 
   _back() {

@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -45,9 +46,11 @@ class BookHelpDetail extends Component {
     const {dispatch} = this.props
     const _id = this.props.bookHelpId
     this.setState({id: _id})
-    dispatch(bookHelpDetail(_id))
-    dispatch(bookHelpDetailCommentBest(_id))
-    dispatch(bookHelpDetailCommentList(_id, {start: 0, limit: 30}, true, []))
+    InteractionManager.runAfterInteractions(()=>{
+      dispatch(bookHelpDetail(_id))
+      dispatch(bookHelpDetailCommentBest(_id))
+      dispatch(bookHelpDetailCommentList(_id, {start: 0, limit: 30}, true, []))
+    })
   }
 
   _back() {

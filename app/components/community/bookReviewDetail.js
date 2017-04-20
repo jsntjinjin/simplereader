@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -44,9 +45,11 @@ class BookReviewDetail extends Component {
     const {dispatch} = this.props
     const _id = this.props.bookReviewId
     this.setState({id: _id})
-    dispatch(bookReviewDetail(_id))
-    dispatch(bookReviewDetailCommentBest(_id))
-    dispatch(bookReviewDetailCommentList(_id, {start: 0, limit: 30}, true, []))
+    InteractionManager.runAfterInteractions(()=>{
+      dispatch(bookReviewDetail(_id))
+      dispatch(bookReviewDetailCommentBest(_id))
+      dispatch(bookReviewDetailCommentList(_id, {start: 0, limit: 30}, true, []))
+    })
   }
 
   _back() {

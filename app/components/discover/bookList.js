@@ -13,7 +13,8 @@ import {
   View,
   ScrollView,
   ListView,
-  Modal
+  Modal,
+  InteractionManager
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -44,7 +45,9 @@ export default class BookList extends Component {
   }
 
   componentDidMount() {
-    this._getBookListTag()
+    InteractionManager.runAfterInteractions(()=>{
+      this._getBookListTag()
+    })
   }
 
   _back() {

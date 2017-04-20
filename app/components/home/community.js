@@ -15,7 +15,6 @@ import CommonItemForTab from '../../weight/commonItemForTab'
 import BookDiscussion from '../community/bookDiscussion'
 import BookReview from '../community/bookReview'
 import BookHelp from '../community/bookHelp'
-import GirlBookDiscussion from '../community/girlBookDiscussion'
 import config from '../../common/config'
 
 export default class Community extends Component {
