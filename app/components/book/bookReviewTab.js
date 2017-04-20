@@ -49,7 +49,7 @@ class BookReviewTab extends Component {
   componentWillReceiveProps(nextProps) {
     const {dispatch} = this.props
     if (nextProps.sort !== this.props.sort) {
-      dispatch(bookDiscussionList(this._setParams(nextProps.bookId, nextProps.sort, 0), true, []))
+      dispatch(bookReviewList(this._setParams(nextProps.bookId, nextProps.sort, 0), true, []))
     }
   }
 

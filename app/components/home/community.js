@@ -73,15 +73,15 @@ export default class Community extends Component {
   render() {
     return (
       <View style={styles.body}>
-        <CommonItemForTab title={'综合讨论区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookDiscussion('ramble')}/>
+        <CommonItemForTab title={'综合讨论区'} image={require('../../imgs/icon_discussion.png')} clickItem={() => this._goToBookDiscussion('ramble')}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'书评区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookReview()}/>
+        <CommonItemForTab title={'书评区'} image={require('../../imgs/icon_review.png')} clickItem={() => this._goToBookReview()}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'书荒互助区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookHelp()}/>
+        <CommonItemForTab title={'书荒互助区'} image={require('../../imgs/icon_help.png')} clickItem={() => this._goToBookHelp()}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'女生区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookDiscussion('girl')}/>
+        <CommonItemForTab title={'女生区'} image={require('../../imgs/icon_girl.png')} clickItem={() => this._goToBookDiscussion('girl')}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'原创区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToBookDiscussion('original')}/>
+        <CommonItemForTab title={'原创区'} image={require('../../imgs/icon_original.png')} clickItem={() => this._goToBookDiscussion('original')}/>
       </View>
     )
   }

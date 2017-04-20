@@ -60,11 +60,11 @@ export default class Discover extends Component {
   render() {
     return (
       <View style={styles.body}>
-        <CommonItemForTab title={'排行榜'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToCharts()}/>
+        <CommonItemForTab title={'排行榜'} image={require('../../imgs/icon_charts.png')} clickItem={() => this._goToCharts()}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'主题书单'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToThemeBookList()}/>
+        <CommonItemForTab title={'主题书单'} image={require('../../imgs/icon_booklist.png')} clickItem={() => this._goToThemeBookList()}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'分类'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToClassify()}/>
+        <CommonItemForTab title={'分类'} image={require('../../imgs/icon_category.png')} clickItem={() => this._goToClassify()}/>
       </View>
     )
   }

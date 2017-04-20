@@ -30,23 +30,32 @@ import api from '../common/api'
 import config from '../common/config'
 import {bookChapter, chapterDetailFromNet}from '../actions/readPlatformAction'
 
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
 class ReadPlatform extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
+      bookName: '',
       showControlStation: false,
-      showSaveModal: false
+      showSaveModal: false,
+      showListModal: false,
     }
   }
 
   componentDidMount() {
     const {dispatch} = this.props
     let bookId = this.props.bookId
-    let book = realm.objects('HistoryBook').filtered('bookId = "' + bookId + '"')
+    let book = realm.objectForPrimaryKey('HistoryBook', bookId)
+    if (this.props.bookDetail) {
+      this.setState({bookName: this.props.bookDetail.title})
+    } else {
+      this.setState({bookName: book.bookName})
+    }
     InteractionManager.runAfterInteractions(()=>{
-      dispatch(bookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0))
-      this._updateHistoryBookChapter(bookId, book.length > 0 ? book[0].historyChapterNum : 0)
+      dispatch(bookChapter(bookId, book ? book.historyChapterNum : 0))
+      this._updateHistoryBookChapter(bookId, book ? book.historyChapterNum : 0)
     })
   }
 
@@ -138,6 +147,19 @@ class ReadPlatform extends Component {
     })
   }
 
+  _showListModal() {
+    this.setState({showListModal: true, showControlStation: false})
+  }
+
+  _closeListModal() {
+    this.setState({showListModal: false})
+  }
+
+  _clickListModalItem(rowID) {
+    this._nowChapter(rowID)
+    this._closeListModal()
+  }
+
   _showControlStation(evt) {
     var pageX = evt.nativeEvent.pageX
     var pageY = evt.nativeEvent.pageY
@@ -151,21 +173,21 @@ class ReadPlatform extends Component {
     const {dispatch, readPlatform} = this.props
     let url = readPlatform.bookChapter.chapters[chapterNum - 1].link
     dispatch(chapterDetailFromNet(url, chapterNum - 1))
-    this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum - 1)
+    this._updateHistoryBookChapter(this.props.bookId, chapterNum - 1)
   }
 
   _nowChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
     let url = readPlatform.bookChapter ? readPlatform.bookChapter.chapters[chapterNum].link : null
     dispatch(chapterDetailFromNet(url, chapterNum))
-    this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum)
+    this._updateHistoryBookChapter(this.props.bookId, chapterNum)
   }
 
   _nextChapter(chapterNum) {
     const {dispatch, readPlatform} = this.props
     let url = readPlatform.bookChapter.chapters[chapterNum + 1].link
     dispatch(chapterDetailFromNet(url, chapterNum + 1))
-    this._updateHistoryBookChapter(readPlatform.bookChapter.book, chapterNum + 1)
+    this._updateHistoryBookChapter(this.props.bookId, chapterNum + 1)
   }
 
   _updateHistoryBookChapter(bookId, chapterNum){
@@ -173,7 +195,7 @@ class ReadPlatform extends Component {
     var book = realm.objectForPrimaryKey('HistoryBook', bookId)
     if (book) {
       realm.write(() => {
-        if (book.bookId == books[books.length - 1].bookId) {
+        if (book.bookId === books[books.length - 1].bookId) {
           realm.create('HistoryBook', {bookId: book.bookId, historyChapterNum: chapterNum}, true)
         } else {
           var sortNum = books[books.length - 1].sortNum + 1
@@ -181,6 +203,30 @@ class ReadPlatform extends Component {
         }
       })
     }
+  }
+
+  renderListModal(rowData, sectionID, rowID, highlightRow) {
+    const {readPlatform} = this.props
+    return (
+      <TouchableOpacity 
+        activeOpacity={0.5}
+        onPress={() => this._clickListModalItem(parseInt(rowID))}>
+        {
+          readPlatform.chapterNum !== parseInt(rowID) ?
+            <Text 
+              numberOfLines={1}
+              style={[styles.listModalText, {fontSize: config.css.fontSize.title, color: config.css.fontColor.title}]}>
+              {(parseInt(rowID) + 1) + ' -- '+ rowData.title}
+            </Text>
+          :
+            <Text 
+              numberOfLines={1}
+              style={[styles.listModalText, {fontSize: config.css.fontSize.title, color: config.css.fontColor.appMainColor}]}>
+              {(parseInt(rowID) + 1) + ' -- '+ rowData.title}
+            </Text>
+        }
+      </TouchableOpacity>
+    )
   }
 
   render() {
@@ -286,7 +332,7 @@ class ReadPlatform extends Component {
                   color={config.css.color.appBlack}/>
                 <Text style={styles.controlFooterTitle}>书签</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
+              <TouchableOpacity style={styles.controlFooterItem} onPress={this._showListModal.bind(this)}>
                 <Icon 
                   name='ios-list-box'
                   style={styles.controlFooterIcon}
@@ -315,6 +361,22 @@ class ReadPlatform extends Component {
                 <Text style={styles.modalButton} onPress={this._toSaveAndPop.bind(this)}>加入书架</Text>
               </View>
             </View>
+          </TouchableOpacity>
+        </Modal>
+        <Modal
+          visible={this.state.showListModal}
+          animationType = {'fade'}
+          transparent = {true}>
+          <TouchableOpacity 
+            style={styles.listModal} 
+            activeOpacity={1}
+            onPress={() => this._closeListModal()}>
+            <Text style={styles.listModalTitle}>{this.state.bookName}</Text>
+            <ListView 
+              style={styles.innerListView}
+              enableEmptySections={true}
+              dataSource={ds.cloneWithRows(readPlatform.bookChapter ? readPlatform.bookChapter.chapters : [])}
+              renderRow={this.renderListModal.bind(this)}/>
           </TouchableOpacity>
         </Modal>
       </View>
@@ -395,6 +457,33 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.appMainColor,
+  },
+  listModal: {
+    flex: 1, 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+  },
+  innerListView: {
+    backgroundColor: '#fff3df',
+    width: Dimen.window.width - 60,
+    flex: 1
+  },
+  listModalTitle: {
+    fontSize: config.css.fontSize.appTitle,
+    color: config.css.fontColor.title,
+    backgroundColor: '#fff3df',
+    width: Dimen.window.width - 60,
+    borderBottomWidth: 1,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    borderColor: config.css.color.line
+  },
+  listModalText: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 20,
+    borderBottomWidth: 1,
+    borderColor: config.css.color.line
   }
 })
 

@@ -33,6 +33,7 @@ local.properties
 # node.js
 #
 node_modules/
+release_ios/
 npm-debug.log
 yarn-error.log
 

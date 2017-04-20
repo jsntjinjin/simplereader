@@ -45,9 +45,9 @@ export default class Mine extends Component {
   render() {
     return (
       <View style={styles.body}>
-        <CommonItemForTab title={'我的书单'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToMyBookList()}/>
+        <CommonItemForTab title={'我的书单'} image={require('../../imgs/icon_booklist.png')} clickItem={() => this._goToMyBookList()}/>
         <View style={styles.line}/>
-        <CommonItemForTab title={'书籍养肥区'} image={require('../../imgs/splash.jpg')} clickItem={() => this._goToFatten()}/>
+        <CommonItemForTab title={'书籍养肥区'} image={require('../../imgs/icon_fatten.png')} clickItem={() => this._goToFatten()}/>
       </View>
     )
   }
