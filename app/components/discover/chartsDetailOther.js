@@ -25,6 +25,8 @@ import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import {chartsDetail} from '../../actions/chartsAction'
 import BookDetail from '../bookDetail'
+import Loading from '../../weight/loading'
+import LoadingMore from '../../weight/loadingMore'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -86,6 +88,12 @@ class ChartsDetailOther extends Component {
       </TouchableOpacity>
     )
   }
+
+  renderFooter() {
+    return (
+      <LoadingMore hasMore={false} />
+    )
+  }
  
   render() {
     const {charts} = this.props
@@ -106,12 +114,13 @@ class ChartsDetailOther extends Component {
             color={config.css.color.appMainColor}/>
         </View>
         {charts.isLoadingDetail ? 
-            <Text style={[styles.body]}>正在加载中~~~</Text>
+            <Loading />
           :
             <ListView 
               enableEmptySections={true}
               style={styles.body}
               dataSource={ds.cloneWithRows(charts.chartsDetailBooks)}
+              renderFooter={this.renderFooter.bind(this)}
               renderRow={this.renderMainItem.bind(this)}/>
         }
       </View>

@@ -27,6 +27,8 @@ import {bookDiscussionDetail,
   bookDiscussionDetailCommentBest, 
   bookDiscussionDetailCommentList
 } from '../../actions/bookDiscussionAction'
+import Loading from '../../weight/loading'
+import LoadingMore from '../../weight/loadingMore'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -165,11 +167,11 @@ class BookDiscussionDetail extends Component {
     }
     if (bookDiscussion.bookDiscussionCommentList.length < bookDiscussion.totalComment) {
       return (
-        <Text style={styles.footer}>正在加载更多评论~~~</Text>
+        <LoadingMore hasMore={true} />
       )
     } else {
       return (
-        <Text style={styles.footer}>没有更多评论了~~~</Text>
+        <LoadingMore hasMore={false} />
       )
     }
   }
@@ -188,7 +190,7 @@ class BookDiscussionDetail extends Component {
           <Text style={styles.headerText}>详情</Text>
         </View>
         {bookDiscussion.isLoadingBookDiscussionCommentList ? 
-            <Text style={styles.body}>正在加载中~~~</Text>
+            <Loading />
           :
             <ListView
               enableEmptySections={true}
@@ -306,11 +308,6 @@ const styles = StyleSheet.create({
     fontSize: config.css.fontSize.desc,
     color: config.css.fontColor.desc,
   },
-  footer: {
-    height: 30,
-    width: Dimen.window.width,
-    textAlign: 'center'
-  }
 })
 
 function mapStateToProps(store) {

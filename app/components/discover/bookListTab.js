@@ -24,6 +24,8 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import BookListDetail from './bookListDetail'
+import Loading from '../../weight/loading'
+import LoadingMore from '../../weight/loadingMore'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -151,11 +153,11 @@ export default class BookListTab extends Component {
     }
     if (this.state.bookLists.length < this.state.total) {
       return (
-        <Text style={styles.bookListFooter}>正在加载更多~~~</Text>
+        <LoadingMore hasMore={true} />
       )
     } else {
       return (
-        <Text style={styles.bookListFooter}>没有更多书单了~~~</Text>
+        <LoadingMore hasMore={false} />
       )
     }
   }
@@ -164,7 +166,7 @@ export default class BookListTab extends Component {
     return (
       <View style={styles.container}>
         {this.state.isLoading ? 
-            <Text style={{flex: 1, textAlign: 'center'}}>正在加载中~~~</Text>
+            <Loading />
           :
             <ListView
               enableEmptySections={true}
@@ -225,9 +227,4 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginRight: 14
   },
-  bookListFooter: {
-    height: 30,
-    width: Dimen.window.width,
-    textAlign: 'center'
-  }
 })

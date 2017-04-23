@@ -22,7 +22,7 @@ const initialState = {
   bookReviewCommentList: []
 }
 
-export default function bookDetail(state = initialState, action) {
+export default function bookReview(state = initialState, action) {
   switch (action.type) {
     case types.COMMUNITY_BOOK_REVIEW_LIST_LOADING:
       return Object.assign({}, state, {

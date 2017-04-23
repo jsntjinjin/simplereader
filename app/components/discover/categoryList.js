@@ -24,6 +24,7 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import {categoryListBasic, categoryListV2} from '../../actions/categoryListAction'
+import Loading from '../../weight/loading'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -118,7 +119,7 @@ class CategoryList extends Component {
           <Text style={styles.headerText}>分类</Text>
         </View>
         {categoryList.isLoadingBasic ?
-            <Text>正在加载中~~~</Text>
+            <Loading />
           :
             <ScrollView style={styles.body}>
               <Text style={styles.listHeader}>男生</Text>

@@ -23,6 +23,7 @@ import api from '../../common/api'
 import Dimen from '../../utils/dimensionsUtil'
 import {dateFormat} from '../../utils/formatUtil'
 import Toast from '../../weight/toast'
+import CommonText from '../../weight/commonText'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -180,9 +181,7 @@ export default class Bookshelves extends Component {
             dataSource={ds.cloneWithRows(this.state.bookshelves)}
             renderRow={this.renderBookshelves.bind(this)}/>
           : 
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text >您还没有收藏过任何书籍哦~~</Text>
-          </View>
+          <CommonText text='您还没有收藏过任何书籍哦~~'/>
         }
         {this.state.focusBook ?
             <Modal

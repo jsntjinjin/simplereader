@@ -19,7 +19,7 @@ const initialState = {
   bookReviewTotal: 0
 }
 
-export default function bookDetail(state = initialState, action) {
+export default function bookCommunity(state = initialState, action) {
   switch (action.type) {
     case types.BOOK_DISCUSSION_LIST_LOADING:
       return Object.assign({}, state, {

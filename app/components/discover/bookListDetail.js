@@ -28,6 +28,8 @@ import api from '../../common/api'
 import request from '../../utils/httpUtil'
 import {wordCountFormat} from '../../utils/formatUtil'
 import Toast from '../../weight/toast'
+import Loading from '../../weight/loading'
+import CommonText from '../../weight/commonText'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -85,7 +87,6 @@ export default class BookListDetail extends Component {
     realm.write(() => {
       if(book) {
         realm.create('MyCollectionBookLists', {id: bookListDetail._id, isToShow: true}, true)
-        // console.log('书单已经保存过了')
         Toast.toastLong('书单已经保存过了')
       } else {
         realm.create('MyCollectionBookLists', {
@@ -176,20 +177,21 @@ export default class BookListDetail extends Component {
             style= {styles.headerIcon}
             onPress={this._collectToMine.bind(this)}>收藏</Text>
         </View>
-        {this.state.bookListDetail ?
-            <ListView
-              style={{backgroundColor: config.css.color.line}}
-              enableEmptySections={true}
-              dataSource={ds.cloneWithRows(this.state.bookListDetail.books)}
-              renderHeader={this.renderBookListHeader.bind(this)}
-              renderRow={this.renderBookList.bind(this)}/>
-          : 
-            <Text style={styles.body}>暂无数据</Text>
-        }
         {this.state.isLoadingDetail ? 
-            <Text style={styles.body}>正在加载中~~~</Text>
+            <Loading />
           :
-            null
+            <View>
+              {this.state.bookListDetail ?
+                  <ListView
+                    style={{backgroundColor: config.css.color.line}}
+                    enableEmptySections={true}
+                    dataSource={ds.cloneWithRows(this.state.bookListDetail.books)}
+                    renderHeader={this.renderBookListHeader.bind(this)}
+                    renderRow={this.renderBookList.bind(this)}/>
+                : 
+                  <CommonText text='暂无数据' />
+              }
+            </View>
         }
       </View>
     )

@@ -9,13 +9,13 @@
 import * as types from '../common/actionType'
 
 const initialState = {
-  isLoadingBasic: false,
+  isLoadingBasic: true,
   maleList: [],
   femaleList: [],
   categoryListV2: null
 }
 
-export default function charts(state = initialState, action) {
+export default function categoryList(state = initialState, action) {
   switch (action.type) {
     case types.DISCOVER_CATEGORY_LIST_LOADING:
       return Object.assign({}, state, {

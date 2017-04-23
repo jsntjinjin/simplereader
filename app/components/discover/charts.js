@@ -25,6 +25,7 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import {charts} from '../../actions/chartsAction'
+import Loading from '../../weight/loading'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -125,7 +126,7 @@ class Charts extends Component {
             color={config.css.color.appMainColor}/>
         </View>
         {charts.isLoading ? 
-            <Text style={[styles.body]}>正在加载中~~~</Text>
+            <Loading />
           :
             <ScrollView 
               style={styles.body}

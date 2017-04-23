@@ -19,13 +19,12 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { connect } from 'react-redux'
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view'
 
-import TabBarOnlyText from '../../weight/TabBarOnlyText'
 import BookListDetail from '../discover/bookListDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
-import request from '../../utils/httpUtil'
 import Toast from '../../weight/toast'
+import CommonText from '../../weight/commonText'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -103,7 +102,7 @@ export default class MyBookList extends Component {
               dataSource={ds.cloneWithRows(this.state.myBookList)}
               renderRow={this.renderBookList.bind(this)}/>
           : 
-            <Text style={styles.body}>暂无数据</Text>
+            <CommonText text='你还没有保存过书单~~~'/>
         }
       </View>
     )

@@ -15,7 +15,7 @@ const initialState = {
   total: 0
 }
 
-export default function charts(state = initialState, action) {
+export default function bookList(state = initialState, action) {
   switch (action.type) {
     case types.DISCOVER_BOOK_LIST_LOADING:
       return Object.assign({}, state, {

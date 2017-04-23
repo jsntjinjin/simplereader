@@ -82,7 +82,6 @@ export default class SelectionTabs extends Component {
     this.setState({key: key, showList: true})
   }
 
-
   renderItem(selection) {
     var items = []
     if (selection) {
@@ -113,7 +112,7 @@ export default class SelectionTabs extends Component {
         })}
         <Modal
           visible={this.state.showList}
-          animationType = {'slide'}
+          animationType = {'none'}
           transparent = {true}>
           <TouchableOpacity 
             style={styles.modal}

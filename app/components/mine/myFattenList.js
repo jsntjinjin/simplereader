@@ -22,6 +22,7 @@ import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import {dateFormat} from '../../utils/formatUtil'
+import CommonText from '../../weight/commonText'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -100,7 +101,7 @@ export default class MyFattenList extends Component {
               dataSource={ds.cloneWithRows(this.state.myBookList)}
               renderRow={this.renderBookList.bind(this)}/>
           : 
-            <Text style={styles.body}>暂无数据</Text>
+            <CommonText text='你还没有保存过书单~~~'/>
         }
       </View>
     )

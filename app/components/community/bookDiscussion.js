@@ -26,6 +26,8 @@ import {dateFormat} from '../../utils/formatUtil'
 import api from '../../common/api'
 import {bookDiscussionList} from '../../actions/bookDiscussionAction'
 import SelectionTabs from '../../weight/selectionTabs'
+import Loading from '../../weight/loading'
+import LoadingMore from '../../weight/loadingMore'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 var tabArray = [config.distillate, config.discussionSort]
@@ -132,7 +134,7 @@ class BookDiscussion extends Component {
       return null
     }
     return (
-      <Text style={styles.bookListFooter}>正在加载更多~~~</Text>
+      <LoadingMore hasMore={true} />
     ) 
   }
 
@@ -151,7 +153,7 @@ class BookDiscussion extends Component {
         </View>
         <SelectionTabs tabArray={tabArray} selectItem={(selected) => this._changeState(selected)}/>
         {bookDiscussion.isLoadingBookDiscussionList ? 
-            <Text style={styles.body}>正在加载中~~~</Text>
+            <Loading />
           :
             <ListView
               enableEmptySections={true}
@@ -242,11 +244,6 @@ const styles = StyleSheet.create({
     color: config.css.fontColor.desc,
     marginLeft: 3
   },
-  bookListFooter: {
-    height: 30,
-    width: Dimen.window.width,
-    textAlign: 'center'
-  }
 })
 
 function mapStateToProps(store) {

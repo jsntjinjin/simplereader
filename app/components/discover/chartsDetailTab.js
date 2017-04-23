@@ -23,6 +23,8 @@ import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
+import Loading from '../../weight/loading'
+import LoadingMore from '../../weight/loadingMore'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -35,7 +37,7 @@ export default class ChartsDetailTab extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isLoading: false,
+      isLoading: true,
       chartsDetailBooks: []
     }
   }
@@ -94,7 +96,7 @@ export default class ChartsDetailTab extends Component {
 
   renderFooter() {
     return (
-      <Text style={styles.bookListFooter}>已经到最底部了~~~</Text>
+      <LoadingMore hasMore={false} />
     )
   }
 
@@ -102,7 +104,7 @@ export default class ChartsDetailTab extends Component {
     return (
       <View style={styles.container}>
         {this.state.isLoading ? 
-            <Text style={{flex: 1, textAlign: 'center'}}>正在加载中~~~</Text>
+            <Loading />
           :
             <ListView 
               enableEmptySections={true}

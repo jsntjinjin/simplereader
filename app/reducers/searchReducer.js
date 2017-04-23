@@ -17,7 +17,7 @@ const initialState = {
   searchState: false,
 }
 
-export default function readPlatform(state = initialState, action) {
+export default function search(state = initialState, action) {
   switch (action.type) {
     case types.SEARCH_HOT_WORDS:
       return Object.assign({}, state, {

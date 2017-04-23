@@ -54,7 +54,7 @@ export let searchBooks = (text) => {
   return dispatch => {
     return request.get(api.SEARCH_BOOKS, 
       {query: text},
-      (data) => {data.ok ? dispatch(getSearchBooks(data.books, true)) : null})
+      (data) => {data.ok ? dispatch(getSearchBooks(data.books)) : null})
   }
 }
 

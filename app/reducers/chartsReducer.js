@@ -9,8 +9,8 @@
 import * as types from '../common/actionType'
 
 const initialState = {
-  isLoading: false,
-  isLoadingDetail: false,
+  isLoading: true,
+  isLoadingDetail: true,
   male: [],
   female: [],
   maleOther: [],

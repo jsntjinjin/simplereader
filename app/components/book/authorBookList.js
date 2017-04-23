@@ -23,6 +23,7 @@ import BookDetail from '../bookDetail'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
+import Loading from '../../weight/loading'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -108,7 +109,7 @@ export default class AuthorBookList extends Component {
             color={config.css.color.appMainColor}/>
         </View>
         {this.state.isLoading ? 
-            <Text style={{flex: 1, textAlign: 'center'}}>正在加载中~~~</Text>
+            <Loading />
           :
             <ListView
               enableEmptySections={true}

@@ -23,6 +23,9 @@
 
 ## 更新记录
 
+#### 2017年04月23日14:21:17
+1. 添加loading,loadingMore,commonText,复用代码
+
 #### 2017年04月23日11:14:27
 1. 重构search
 2. 修改httpUtil相关代码

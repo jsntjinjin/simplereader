@@ -27,6 +27,7 @@ import BookListDetail from './discover/bookListDetail'
 import BookReviewDetail from './community/bookReviewDetail'
 import StarLevel from '../weight/starLevel'
 import TagsGroup from '../weight/tagsGroup'
+import Loading from '../weight/loading'
 import request from '../utils/httpUtil'
 import {wordCountFormat, dateFormat} from '../utils/formatUtil'
 import Dimen from '../utils/dimensionsUtil'
@@ -40,7 +41,7 @@ export default class BookDetail extends Component {
     this.state = {
       hasSaveBook: false,
       longInTroLineNumber: 2,
-      bookDetail: '',
+      bookDetail: null,
       hotReview: [],
       recommendBookList: []
     }
@@ -324,101 +325,105 @@ export default class BookDetail extends Component {
             size={25}
             color={config.css.color.appBlack}/>
         </View>
-        <ScrollView 
-          style={styles.body}
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.bookDetail}>
-            <Image 
-              style={styles.bookDetailImage}
-              source={this.state.bookDetail.cover
-                ? {uri: (api.IMG_BASE_URL + this.state.bookDetail.cover)} 
-                : require('../imgs/splash.jpg')}/>
-            <View style={{justifyContent: 'space-around'}}>
-              <Text style={{color: config.css.fontColor.title, fontSize: config.css.fontSize.title}}>{this.state.bookDetail.title}</Text>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.bookDetailAuthor} onPress={this._clickAuthor.bind(this)}>{this.state.bookDetail.author}</Text>
-                <Text style={styles.bookDetailMidText}> | </Text>
-                <Text style={styles.bookDetailMidText}>{this.state.bookDetail.minorCate}</Text>
-                <Text style={styles.bookDetailMidText}> | </Text>
-                <Text style={styles.bookDetailMidText}>{wordCountFormat(this.state.bookDetail.wordCount)}</Text>
+        {this.state.bookDetail && this.state.hotReview.length > 0 && this.state.recommendBookList.length > 0 ? 
+          <ScrollView 
+            style={styles.body}
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.bookDetail}>
+              <Image 
+                style={styles.bookDetailImage}
+                source={this.state.bookDetail.cover
+                  ? {uri: (api.IMG_BASE_URL + this.state.bookDetail.cover)} 
+                  : require('../imgs/splash.jpg')}/>
+              <View style={{justifyContent: 'space-around'}}>
+                <Text style={{color: config.css.fontColor.title, fontSize: config.css.fontSize.title}}>{this.state.bookDetail.title}</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.bookDetailAuthor} onPress={this._clickAuthor.bind(this)}>{this.state.bookDetail.author}</Text>
+                  <Text style={styles.bookDetailMidText}> | </Text>
+                  <Text style={styles.bookDetailMidText}>{this.state.bookDetail.minorCate}</Text>
+                  <Text style={styles.bookDetailMidText}> | </Text>
+                  <Text style={styles.bookDetailMidText}>{wordCountFormat(this.state.bookDetail.wordCount)}</Text>
+                </View>
+                <Text style={styles.bookDetailMidText}>{'更新时间: ' + dateFormat(this.state.bookDetail.updated)}</Text>
               </View>
-              <Text style={styles.bookDetailMidText}>{'更新时间: ' + dateFormat(this.state.bookDetail.updated)}</Text>
             </View>
-          </View>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginLeft: 14, marginRight: 14}}>
-            <TouchableOpacity style={this.state.hasSaveBook ? [styles.button1, {backgroundColor: config.css.color.line}] : styles.button1} onPress={() => this._addOrDeleteBook(this.state.bookDetail)}>
-              {this.state.hasSaveBook ?
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', marginLeft: 14, marginRight: 14}}>
+              <TouchableOpacity style={this.state.hasSaveBook ? [styles.button1, {backgroundColor: config.css.color.line}] : styles.button1} onPress={() => this._addOrDeleteBook(this.state.bookDetail)}>
+                {this.state.hasSaveBook ?
+                  <Icon
+                    name='ios-remove-outline'
+                    style={styles.buttonIcon}
+                    size={15}
+                    color={config.css.color.appBackground} />
+                :
+                  <Icon
+                    name='ios-add-outline'
+                    style={styles.buttonIcon}
+                    size={15}
+                    color={config.css.color.appBackground} />
+                }
+                <Text style={styles.buttonText}>{this.state.hasSaveBook ? '不追了' : '追更新'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button2} onPress={() => this._readBook(this.state.bookDetail)}>
                 <Icon
-                  name='ios-remove-outline'
+                  name='ios-book-outline'
                   style={styles.buttonIcon}
                   size={15}
                   color={config.css.color.appBackground} />
-              :
-                <Icon
-                  name='ios-add-outline'
-                  style={styles.buttonIcon}
-                  size={15}
-                  color={config.css.color.appBackground} />
-              }
-              <Text style={styles.buttonText}>{this.state.hasSaveBook ? '不追了' : '追更新'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button2} onPress={() => this._readBook(this.state.bookDetail)}>
-              <Icon
-                name='ios-book-outline'
-                style={styles.buttonIcon}
-                size={15}
-                color={config.css.color.appBackground} />
-              <Text style={styles.buttonText}>开始阅读</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.line}/>
-          <View style={{flex: 1,flexDirection: 'row',justifyContent: 'space-around'}}>
-            <View style={styles.bookData}>
-              <Text style={styles.bookDataTitle}>追书人数</Text>
-              <Text style={styles.bookDataNumber}>{this.state.bookDetail.latelyFollower}</Text>
+                <Text style={styles.buttonText}>开始阅读</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.bookData}>
-              <Text style={styles.bookDataTitle}>读者留存率</Text>
-              <Text style={styles.bookDataNumber}>{this.state.bookDetail.retentionRatio + '%'}</Text>
-            </View>
-            <View style={styles.bookData}>
-              <Text style={styles.bookDataTitle}>日更新字数</Text>
-              <Text style={styles.bookDataNumber}>{this.state.bookDetail.serializeWordCount}</Text>
-            </View>
-          </View>
-          <View style={styles.line}/>
-          <TagsGroup tags={this.state.bookDetail.tags} checkTag={(tag) => this._clickTag(tag)}/>
-          <View style={styles.line}/>
-          <Text style={styles.bookDataNumber} numberOfLines={this.state.longInTroLineNumber} onPress={this._showLongInTro.bind(this)}>{this.state.bookDetail.longIntro}</Text>
-          <View style={styles.hightLine}/>
-          <View style={styles.bookHotReviewHeader}>
-            <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>热门书评</Text>
-            <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.title}} onPress={this._moreHotReview.bind(this)}>更多</Text>
-          </View>
-          {this.renderHotReview(this.state.hotReview).map((item, i) => {
-            return item
-          })}
-          <View style={styles.hightLine}/>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={this._toBookCommunity.bind(this)}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginLeft: 14, marginRight: 14}}>
-              <View>
-                <Text style={{fontSize: config.css.fontSize.title, color: config.css.fontColor.title, marginBottom: 10}}>{this.state.bookDetail.title + '的社区'}</Text>
-                <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>{'共有' + this.state.bookDetail.postCount + '个帖子'}</Text>
+            <View style={styles.line}/>
+            <View style={{flex: 1,flexDirection: 'row',justifyContent: 'space-around'}}>
+              <View style={styles.bookData}>
+                <Text style={styles.bookDataTitle}>追书人数</Text>
+                <Text style={styles.bookDataNumber}>{this.state.bookDetail.latelyFollower}</Text>
               </View>
-              <Icon 
-                name='ios-arrow-forward-outline'
-                size={15}
-                color={config.css.color.appTitle} />
+              <View style={styles.bookData}>
+                <Text style={styles.bookDataTitle}>读者留存率</Text>
+                <Text style={styles.bookDataNumber}>{this.state.bookDetail.retentionRatio + '%'}</Text>
+              </View>
+              <View style={styles.bookData}>
+                <Text style={styles.bookDataTitle}>日更新字数</Text>
+                <Text style={styles.bookDataNumber}>{this.state.bookDetail.serializeWordCount}</Text>
+              </View>
             </View>
-          </TouchableOpacity>
-          <View style={styles.hightLine}/>
-          <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc, marginLeft: 14, marginRight: 14, marginBottom: 14}}>推荐书单</Text>
-          {this.renderRecommendBookList(this.state.recommendBookList).map((item, i) => {
-            return item
-          })}
-        </ScrollView>
+            <View style={styles.line}/>
+            <TagsGroup tags={this.state.bookDetail.tags} checkTag={(tag) => this._clickTag(tag)}/>
+            <View style={styles.line}/>
+            <Text style={styles.bookDataNumber} numberOfLines={this.state.longInTroLineNumber} onPress={this._showLongInTro.bind(this)}>{this.state.bookDetail.longIntro}</Text>
+            <View style={styles.hightLine}/>
+            <View style={styles.bookHotReviewHeader}>
+              <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>热门书评</Text>
+              <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.title}} onPress={this._moreHotReview.bind(this)}>更多</Text>
+            </View>
+            {this.renderHotReview(this.state.hotReview).map((item, i) => {
+              return item
+            })}
+            <View style={styles.hightLine}/>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={this._toBookCommunity.bind(this)}>
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginLeft: 14, marginRight: 14}}>
+                <View>
+                  <Text style={{fontSize: config.css.fontSize.title, color: config.css.fontColor.title, marginBottom: 10}}>{this.state.bookDetail.title + '的社区'}</Text>
+                  <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>{'共有' + this.state.bookDetail.postCount + '个帖子'}</Text>
+                </View>
+                <Icon 
+                  name='ios-arrow-forward-outline'
+                  size={15}
+                  color={config.css.color.appTitle} />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.hightLine}/>
+            <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc, marginLeft: 14, marginRight: 14, marginBottom: 14}}>推荐书单</Text>
+            {this.renderRecommendBookList(this.state.recommendBookList).map((item, i) => {
+              return item
+            })}
+          </ScrollView>
+          : 
+          <Loading />
+        }
       </View>
     )
   }
