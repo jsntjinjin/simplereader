@@ -1,117 +1,42 @@
-#simplereader
+# simplereader
+#### "简阅" 网络小说阅读器仿照["任阅" 网络小说阅读器](https://github.com/JustWayward/BookReader)，实现追书推荐收藏、书籍/标签检索、读书等功能!
+
+## 介绍
+项目基于ReactNative + Redux的框架开发。项目中的API均来自追书神器，纯属共享学习之用，不得用于商业！！
 
 ## TODO
-* 社区tab -- 综合讨论区详情/书评区/书荒互助区详情小说跳转处理
-* 保存书籍到本地
-* 阅读器功能
-  * 设置功能
-    1. 背景
-    2. 音量键翻页
-    3. 字体大小
-    4. 亮度调节
-    5. 自动调节亮度
-  * 缓存
-  * 书签
-* home -- 右上角功能区
-  1. 同步书架
-  2. wifi传书
-  3. 扫描本地书籍
-  4. 夜间模式
-  5. 设置(书架排序/省流量模式/阅读翻页效果/关于我们/意见反馈/清除缓存)
-* 启动获取推荐书籍列表
-* 第一次启动设置性别
+* [ ] 阅读器分页效果(native本地化)
+* [ ] 阅读器设置功能,书签功能
+* [ ] 缓存书籍到本地
+* [ ] wifi传书(native本地化)
+* [ ] 主题设置(native本地化)
 
-## 更新记录
+## 截图
+* 首页
 
-#### 2017年04月23日14:21:17
-1. 添加loading,loadingMore,commonText,复用代码
+<img src="http://oouqiilcr.bkt.clouddn.com/%E9%A6%96%E9%A1%B5.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/home%E5%8F%91%E7%8E%B0.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/home%E7%A4%BE%E5%8C%BA.png?raw=true" width="280"/>
 
-#### 2017年04月23日11:14:27
-1. 重构search
-2. 修改httpUtil相关代码
-3. 修改书单详情页面,scrollView和listView嵌套导致的卡顿问题
+* book
 
-#### 2017年04月20日20:31:59
-1. 发现tab和社区tab -- 图标修改
-2. 阅读器 -- 添加目录
-3. android添加jks打包文件和配置
+<img src="http://oouqiilcr.bkt.clouddn.com/%E6%90%9C%E7%B4%A2.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B9%A6%E7%B1%8D%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E9%98%85%E8%AF%BB%E5%99%A8.png?raw=true" width="280"/>
 
-#### 2017年04月20日11:01:53
-1. 阅读器 -- 点击返回判断是否保存
-2. 修改时间处理工具类
-3. 给页面添加延时加载,解决因网络请求导致的页面切换卡顿问题
+* 排行榜
 
-#### 2017年04月20日00:12:19
-1. home -- 长按单个书籍跳出设置dialog
-  1. 置顶
-  2. 书籍详情
-  3. 移入养肥区
-  4. 缓存全本
-  5. 删除
-2. 添加养肥区页面
-3. 修改historyBook表
-4. 时间的处理
+<img src="http://oouqiilcr.bkt.clouddn.com/%E6%8E%92%E8%A1%8C%E6%A6%9C.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E6%8E%92%E8%A1%8C%E6%A6%9C%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
 
-#### 2017年04月19日17:30:29
-1. book -- 根据tag获取书单
-2. book -- 根据author获取书单
-3. book -- 热门书评更多
-4. book -- 热门书评单个热门书评
-5. book -- book社区
+* 书单
 
-#### 2017年04月18日20:53:28
-1. 发现tab -- 分类详情tab
-2. 发现tab -- 主题书单tab
-3. 发现tab -- 排行榜详情分类tab
-4. 发现tab -- 分类筛选功能
-5. 发现tab -- 主题书单筛选功能
+<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%951.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%952.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%95%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E5%88%86%E7%B1%BB.png?raw=true" width="280"/>
 
-#### 2017年04月17日16:59:22
-1. 社区tab -- 综合讨论区筛选功能
-2. 社区tab -- 书评区筛选功能
-3. 社区tab -- 书荒互助区筛选功能
-4. 添加筛选功能控件
-5. 添加女生区页面
+* 社区
 
-#### 2017年04月17日00:08:42
-1. 添加书荒互助区页面
-2. 添加书荒互助区详情页面
-3. 修改我的书单跳转
-4. 添加搜索 -- 直接跳转搜索结果功能searchWord
-
-#### 2017年04月16日17:47:38
-1. 添加综合讨论区/原创区页面
-2. 添加讨论详情页面
-3. 添加书评区页面
-4. 添加书评详情页面
-5. storage修改保存周期为永久
-
-#### 2017年04月12日10:30:16
-1. 添加分类页面
-2. 添加分类详情页面/分类详情tab
-
-#### 2017年04月10日11:34:54
-1. 添加主题书单详情页面
-2. 添加我的书单页面
-3. 数据库添加我的书单表
-
-#### 2017年04月08日10:41:23
-
-1. 添加主题书单页面
-
-#### 2017年04月06日20:46:26
-
-1. 完成home页中的发现tab和社区tab页面
-2. 添加排行榜页面和逻辑
-3. 添加单个排行榜详情页面和逻辑
-
-#### 2017年04月04日23:53:05
-
-1. 添加realm,添加书架功能,保存添加到书架中的历史读书记录
-2. 修改一些bug
-
-#### 2017年03月30日17:26:51
-
-1. 添加app整体架构
-2. 添加redux
-3. 完成搜索,书籍详情,阅读器部分代码
+<img src="http://oouqiilcr.bkt.clouddn.com/%E7%A4%BE%E5%8C%BA.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E7%A4%BE%E5%8C%BA%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>

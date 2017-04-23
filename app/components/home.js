@@ -32,7 +32,7 @@ export default class Home extends Component {
     return (
       <View style = {styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerLeftText}>间阅</Text>
+          <Text style={styles.headerLeftText}>简阅</Text>
           <Icon 
             name='ios-search'
             style= {styles.headerIcon}
