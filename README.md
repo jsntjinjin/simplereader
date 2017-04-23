@@ -11,6 +11,9 @@
 * [ ] wifi传书(native本地化)
 * [ ] 主题设置(native本地化)
 
+## 体验下载
+android下载地址: http://oouqiilcr.bkt.clouddn.com/book_1.0_2017-04-23.apk
+
 ## 截图
 * 首页
 
