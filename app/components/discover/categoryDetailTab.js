@@ -66,8 +66,8 @@ export default class CategoryDetailTab extends Component {
     } else {
       this.setState({isLoadingMore: true})
     }
-    request.get(api.DISCOVER_CATEGORY_BOOKS, params)
-      .then((data) => {
+    request.get(api.DISCOVER_CATEGORY_BOOKS, params,
+      (data) => {
         if (data.ok) {
           if (this.state.bookList.length === 0) {
             this.setState({
@@ -88,15 +88,12 @@ export default class CategoryDetailTab extends Component {
             isLoading: false,
             isLoadingMore: false,
           })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
+        }},
+      (error) => {
         this.setState({
           isLoading: false,
           isLoadingMore: false,
-        })
-      })
+        })})
   }
 
   _setTabParams(gender, type, major, minor, start) {

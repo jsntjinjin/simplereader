@@ -18,6 +18,7 @@ import {
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
+import { connect } from 'react-redux'
 
 import TagsGroup from '../weight/tagsGroup'
 import request from '../utils/httpUtil'
@@ -25,47 +26,37 @@ import Dimen from '../utils/dimensionsUtil'
 import api from '../common/api'
 import config from '../common/config'
 import BookDetail from './bookDetail'
+import {
+  searchHotWords, 
+  refreshHowWord,
+  searchAutoComplete,
+  searchBooks,
+  backToInitState
+}from '../actions/searchAction'
 
-export default class Search extends Component {
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
+class Search extends Component {
 
   constructor(props) {
     super(props)
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
       searchWords: '',
-      searchState: false,
-      searchData: ds.cloneWithRows([]),
-      autoComplete: ds.cloneWithRows([]),
-      hotPart: 0,
-      hotWords: ds.cloneWithRows([]),
-      hotWordsPart: ds.cloneWithRows([]),
-      searchHistory: ds.cloneWithRows([])
+      searchHistory: []
     }
   }
 
   componentDidMount() {
+    const {dispatch} = this.props
     // 请求热词,和获取历史搜索数据
     let searchW = this.props.searchWord
     InteractionManager.runAfterInteractions(()=>{
-      this._searchHotWords()
+      dispatch(searchHotWords())
       this._storageSelectSearchHistory()
     })
     if (searchW) {
       this._changeSearchWord(searchW)
     }
-  }
-
-  /**
-   * 获取热词
-   */
-  _searchHotWords() {
-    request.get(api.SEARCH_HOT_WORD, null)
-      .then((data) => {
-        if(data.ok) {
-          this.setState({hotWords: data.hotWords})
-          this._refreshHotWord()
-        }
-      })
   }
 
   _stringArrayToObjectArray(temp) {
@@ -84,18 +75,11 @@ export default class Search extends Component {
    * @param {string} text 输入的关键字
    */
   _searchAutoComplete(text) {
+    const {dispatch} = this.props
     this.setState({searchWords: text})
     if (text) {
-      request.get(api.SEARCH_AUTO_COMPLETE, {query: text})
-        .then((data) => {
-          if(data.ok) {
-            var array = this._stringArrayToObjectArray(data.keywords)
-            this.setState({autoComplete: this.state.autoComplete.cloneWithRows(array)})
-          }
-        })  
-    } else {
-      this.setState({autoComplete: this.state.autoComplete.cloneWithRows([])})
-    } 
+      dispatch(searchAutoComplete(text))
+    }
   }
 
   /**
@@ -103,21 +87,10 @@ export default class Search extends Component {
    * @param {string} text 输入的书名
    */
   _submit(text) {
+    const {dispatch} = this.props
     if(text) {
       this._storageSaveSearchHistory(text)
-      request.get(api.SEARCH_BOOKS, {query: text})
-        .then((data) => {
-          if(data.ok){
-            this.setState({
-              searchData: this.state.searchData.cloneWithRows(data.books),
-              searchState: true,
-              autoComplete: this.state.autoComplete.cloneWithRows([])
-            })
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      dispatch(searchBooks(text))
     }
   }
 
@@ -127,7 +100,7 @@ export default class Search extends Component {
     })
     .then(ret => {
       var array = this._stringArrayToObjectArray(ret.search)
-      this.setState({searchHistory: this.state.autoComplete.cloneWithRows(array)})
+      this.setState({searchHistory: array})
     })
   }
 
@@ -147,7 +120,7 @@ export default class Search extends Component {
       searchStorage.search = ret.search
       storage.save({key: 'search', rawData: searchStorage})
       var array = this._stringArrayToObjectArray(ret.search)
-      this.setState({searchHistory: this.state.autoComplete.cloneWithRows(array)})
+      this.setState({searchHistory: array})
     })
     .catch(err => {
       if(err.name == 'NotFoundError'){
@@ -157,7 +130,7 @@ export default class Search extends Component {
         searchStorage.search.push(text)
         storage.save({key: 'search', rawData: searchStorage})
         var array = this._stringArrayToObjectArray(searchStorage.search)
-        this.setState({searchHistory: this.state.autoComplete.cloneWithRows(array)})
+        this.setState({searchHistory: array})
       }else{
         console.warn(err)
       }
@@ -168,7 +141,7 @@ export default class Search extends Component {
     storage.remove({
       key: 'search'
     })
-    this.setState({searchHistory: this.state.searchHistory.cloneWithRows([])})
+    this.setState({searchHistory: []})
   }
 
   /**
@@ -193,24 +166,19 @@ export default class Search extends Component {
     this._submit(word)
     this.setState({
       searchWords: word,
-      autoComplete: this.state.autoComplete.cloneWithRows([]),
     })
   }
 
   _refreshHotWord() {
-    var part = (this.state.hotPart + 1) % 4
-    var words = []
-    if (8 * (part + 1) < this.state.hotWords.length) {
-      words = this.state.hotWords.slice(8 * part, 8 * (part + 1))
-    } else {
-      words = this.state.hotWords.slice(8 * part)
-    }
-    this.setState({hotPart: part, hotWordsPart: words})
+    const {dispatch, search} = this.props
+    dispatch(refreshHowWord(search.hotWords, search.hotPart))
   }
 
   _back() {
-    if (this.state.searchState) {
-      this.setState({searchState: false, searchWords: '', autoComplete: this.state.autoComplete.cloneWithRows([])})
+    const {dispatch, search} = this.props
+    if (search.searchState) {
+      this.setState({searchWords: ''})
+      dispatch(backToInitState())
     }else{
       this.props.navigator.pop()
     }
@@ -268,7 +236,7 @@ export default class Search extends Component {
   }
 
   render() {
-    const {hotWords} = this.state.hotWords
+    const {search} = this.props
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -289,11 +257,11 @@ export default class Search extends Component {
             onSubmitEditing={(event) => this._submit(event.nativeEvent.text)}/>
         </View>
         <ScrollView style={styles.body}>
-          {this.state.searchState ? 
+          {search.searchState ? 
             // 显示搜索结果
             <ListView 
               enableEmptySections={true}
-              dataSource={this.state.searchData}
+              dataSource={ds.cloneWithRows(search.searchData)}
               renderRow={this.renderSearchData.bind(this)}/> 
           :
             // 显示历史记录和热门搜索
@@ -313,7 +281,7 @@ export default class Search extends Component {
                   换一批
                 </Text>
               </View>
-              <TagsGroup tags={this.state.hotWordsPart} checkTag={(tag) => this._changeSearchWord(tag)}/>
+              <TagsGroup tags={search.hotWordsPart} checkTag={(tag) => this._changeSearchWord(tag)}/>
               <View style={styles.hotWordsHeader}>
                 <Text style={styles.hotWordsHeaderText}>搜索历史</Text>
                 <Icon
@@ -331,15 +299,15 @@ export default class Search extends Component {
               </View>
               <ListView
                 enableEmptySections={true}
-                dataSource={this.state.searchHistory}
+                dataSource={ds.cloneWithRows(this.state.searchHistory)}
                 renderRow={this.renderSearchHistory.bind(this)}/>
             </View>
           }
-          {this.state.autoComplete ? 
+          {search.autoComplete ? 
             <ListView 
               style={{position: 'absolute'}}
               enableEmptySections={true}
-              dataSource={this.state.autoComplete}
+              dataSource={ds.cloneWithRows(search.autoComplete)}
               renderRow={this.renderAutoComplete.bind(this)}/>
           : 
             null 
@@ -445,3 +413,12 @@ const styles = StyleSheet.create({
     fontSize: config.css.fontSize.desc
   }
 })
+
+function mapStateToProps(store) {
+  const { search } = store;
+  return {
+    search
+  }
+}
+
+export default connect(mapStateToProps)(Search)

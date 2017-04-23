@@ -12,36 +12,25 @@ import api from '../common/api'
 
 export let bookChapter = (id, num) => {
   return dispatch => {
-    return request.get(api.READ_BOOK_CHAPTER_LIST(id), null)
-      .then((data) => {
+    return request.get(api.READ_BOOK_CHAPTER_LIST(id), null,
+      (data) => {
         if(data.ok) {
           dispatch(getBookChapterSuccess(data.mixToc))
           dispatch(chapterDetailFromNet(data.mixToc.chapters[num].link, num))
         } else {
           dispatch(getBookChapterSuccess(null))
         }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookChapterSuccess(null))
-      })
+      },
+      (error) => {dispatch(getBookChapterSuccess(null))})
   }
 }
 
 export let chapterDetailFromNet = (chapterUrl, chapterNum) => {
+  let tempUrl = chapterUrl.replace(/\//g, '%2F').replace('?', '%3F')
   return dispatch => {
-    return request.get(api.READ_BOOK_CHAPTER_DETAIL(chapterUrl), null)
-      .then((data) => {
-        if(data.ok) {
-          dispatch(getChapterDetailSuccess(data.chapter, chapterNum))
-        } else {
-          dispatch(getChapterDetailSuccess(null, chapterNum))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getChapterDetailSuccess(null, chapterNum))
-      })
+    return request.get(api.READ_BOOK_CHAPTER_DETAIL(tempUrl), null,
+      (data) => {data.ok ? dispatch(getChapterDetailSuccess(data.chapter, chapterNum)) : dispatch(getChapterDetailFailure(chapterNum))},
+      (error) => {dispatch(getChapterDetailFailure(chapterNum))})
   }
 }
 
@@ -57,6 +46,14 @@ let getChapterDetailSuccess = (chapterDetail, chapterNum) => {
   return {
     type: types.READ_BOOK_CHAPTER_DETAIL,
     chapterDetail: chapterDetail,
+    chapterNum: chapterNum
+  }
+}
+
+let getChapterDetailFailure = (chapterNum) => {
+  return {
+    type: types.READ_BOOK_CHAPTER_DETAIL,
+    chapterDetail: null,
     chapterNum: chapterNum
   }
 }

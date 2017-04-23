@@ -13,35 +13,17 @@ import api from '../common/api'
 export let categoryListBasic = () => {
   return dispatch => {
     dispatch(loadingCategoryListBasic())
-    return request.get(api.DISCOVER_CATEGORY_LIST, null)
-      .then((data) => {
-        if(data.ok) {
-          dispatch(getCategoryListBasicSuccess(data))
-        } else {
-          dispatch(getCategoryListBasicSuccess(null))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getCategoryListBasicSuccess(null))
-      })
+    return request.get(api.DISCOVER_CATEGORY_LIST, null,
+      (data) => {data.ok ? dispatch(getCategoryListBasicSuccess(data)) : dispatch(getCategoryListBasicSuccess(null))},
+      (error) => {dispatch(getCategoryListBasicSuccess(null))})
   }
 }
 
 export let categoryListV2 = () => {
   return dispatch => {
-    return request.get(api.DISCOVER_CATEGORY_LIST_V2, null)
-      .then((data) => {
-        if(data.ok) {
-          dispatch(getCategoryListV2Success(data))
-        } else {
-          dispatch(getCategoryListV2Success(null))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getCategoryListV2Success(null))
-      })
+    return request.get(api.DISCOVER_CATEGORY_LIST_V2, null,
+      (data) => {data.ok ? dispatch(getCategoryListV2Success(data)) : dispatch(getCategoryListV2Success(null))},
+      (error) => {dispatch(getCategoryListV2Success(null))})
   }
 }
 

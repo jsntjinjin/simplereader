@@ -13,36 +13,18 @@ import api from '../common/api'
 export let bookDiscussionList = (params, isFirst, oldList) => {
   return dispatch => {
     dispatch(loadingBookDiscussionList(isFirst))
-    return request.get(api.BOOK_DISCUSSION_LIST, params)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookDiscussionListSuccess(data.posts, oldList))
-        } else {
-           dispatch(getBookDiscussionListSuccess([], oldList))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookDiscussionListSuccess([], oldList))
-      })
+    return request.get(api.BOOK_DISCUSSION_LIST, params,
+      (data) => {data.ok ? dispatch(getBookDiscussionListSuccess(data.posts, oldList)) : dispatch(getBookDiscussionListSuccess([], oldList))},
+      (error) => {dispatch(getBookDiscussionListSuccess([], oldList))})
   }
 }
 
 export let bookReviewList = (params, isFirst, oldList) => {
   return dispatch => {
     dispatch(loadingBookReviewList(isFirst))
-    return request.get(api.BOOK_REVIEW_LIST, params)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookReviewListSuccess(data.reviews, oldList, data.total))
-        } else {
-           dispatch(getBookReviewListSuccess([], oldList))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookReviewListSuccess([], oldList))
-      })
+    return request.get(api.BOOK_REVIEW_LIST, params,
+      (data) => {data.ok ? dispatch(getBookReviewListSuccess(data.reviews, oldList, data.total)) : dispatch(getBookReviewListSuccess([], oldList))},
+      (error) => {dispatch(getBookReviewListSuccess([], oldList))})
   }
 }
 

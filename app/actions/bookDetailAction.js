@@ -13,48 +13,25 @@ import api from '../common/api'
 export let bookDetail = (id) => {
   return dispatch => {
     dispatch(loadingBookDetail())
-    return request.get(api.BOOK_DETAIL(id), null)
-      .then((data) => {
-        dispatch(getBookDetailSuccess(data))
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookDetailSuccess(null))
-      })
+    return request.get(api.BOOK_DETAIL(id), null,
+      (data) => {dispatch(getBookDetailSuccess(data))},
+      (error) => {dispatch(getBookDetailSuccess(null))})
   }
 }
 
 export let hotReview = (id) => {
   return dispatch => {
-    return request.get(api.BOOK_HOT_REVIEW, {book: id})
-      .then((data) => {
-        if(data.ok){
-          dispatch(getHotReviewSuccess(data.reviews))
-        } else {
-          dispatch(getHotReviewSuccess([]))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getHotReviewSuccess([]))
-      })
+    return request.get(api.BOOK_HOT_REVIEW, {book: id},
+      (data) => {data.ok ? dispatch(getHotReviewSuccess(data.reviews)) : dispatch(getHotReviewSuccess([]))},
+      (error) => {dispatch(getHotReviewSuccess([]))})
   }
 }
 
 export let recommendBookList = (id, limit) => {
   return dispatch => {
-    return request.get(api.BOOK_RECOMMEND_BOOK_LIST(id), {limit: limit})
-      .then((data) => {
-        if(data.ok){
-          dispatch(getRecommendBookListSuccess(data.booklists))
-        } else {
-          dispatch(getRecommendBookListSuccess([]))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getRecommendBookListSuccess([]))
-      })
+    return request.get(api.BOOK_RECOMMEND_BOOK_LIST(id), {limit: limit},
+      (data) => {data.ok ? dispatch(getRecommendBookListSuccess(data.booklists)) : dispatch(getRecommendBookListSuccess([]))},
+      (error) => {dispatch(getRecommendBookListSuccess([]))})
   }
 }
 

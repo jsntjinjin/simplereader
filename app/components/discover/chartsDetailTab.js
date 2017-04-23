@@ -48,21 +48,9 @@ export default class ChartsDetailTab extends Component {
 
   _getChartsTabDetail() {
     this.setState({isLoading: true})
-    request.get(api.DISCOVER_CHARTS_DETAIL(this.props.chartsId), null)
-      .then((data) => {
-        if (data.ok) {
-          this.setState({
-            isLoading: false,
-            chartsDetailBooks: data.ranking.books
-          })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        this.setState({
-          isLoading: false
-        })
-      })
+    request.get(api.DISCOVER_CHARTS_DETAIL(this.props.chartsId), null,
+      (data) => {data.ok ? this.setState({isLoading: false, chartsDetailBooks: data.ranking.books}) : null},
+      (error) => {his.setState({isLoading: false})})
   }
 
   /**

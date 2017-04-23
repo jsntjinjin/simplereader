@@ -13,7 +13,7 @@ import config from '../common/config'
 
 var request = {}
 
-request.get = (url, params) => {
+request.get = (url, params, successCallBack, failCallBack) => {
   if (params) {
     url += '?' + queryString.stringify(params)
   }
@@ -21,12 +21,16 @@ request.get = (url, params) => {
   return fetch(url)
     .then((response) => response.json())
     .then((response) => {
-      console.log(response)
-      return response
+      console.log(response) 
+      successCallBack(response)
+    })
+    .catch((error) => {
+      console.log(response) 
+      failCallback(error)
     })
 }
 
-request.post = (url, body) => {
+request.post = (url, body, successCallBack, failCallBack) => {
   var options = _.extend(config.header, {
     body: JSON.stringify(body)
   })
@@ -34,8 +38,12 @@ request.post = (url, body) => {
   return fetch(url, options)
     .then((response) => response.json())
     .then((response) => {
-      console.log(response)
-      return response
+      console.log(response) 
+      successCallBack(response)
+    })
+    .catch((error) => {
+      console.log(response) 
+      failCallback(error)
     })
 }
 module.exports = request

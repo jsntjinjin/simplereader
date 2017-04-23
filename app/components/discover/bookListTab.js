@@ -71,8 +71,8 @@ export default class BookListTab extends Component {
     } else {
       this.setState({isLoadingMore: true})
     }
-    request.get(api.DISCOVER_BOOK_LIST, params)
-      .then((data) => {
+    request.get(api.DISCOVER_BOOK_LIST, params,
+      (data) => {
         if (data.ok) {
           if (this.state.bookLists.length === 0) {
             this.setState({
@@ -92,15 +92,12 @@ export default class BookListTab extends Component {
             isLoading: false,
             isLoadingMore: false,
           })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
+        }},
+      (error) => {
         this.setState({
           isLoading: false,
           isLoadingMore: false,
-        })
-      })
+        })})
   }
 
   _back() {

@@ -13,18 +13,9 @@ import api from '../common/api'
 export let bookListData = (params, isFirst, oldBookList) => {
   return dispatch => {
     dispatch(loadingBookList(isFirst))
-    return request.get(api.DISCOVER_BOOK_LIST, params)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookListSuccess(data, isFirst, oldBookList))
-        } else {
-          dispatch(getBookListSuccess(null))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookListSuccess(null))
-      })
+    return request.get(api.DISCOVER_BOOK_LIST, params,
+      (data) => {data.ok ? dispatch(getBookListSuccess(data, isFirst, oldBookList)) : dispatch(getBookListSuccess(null))},
+      (error) => {dispatch(getBookListSuccess(null))})
   }
 }
 

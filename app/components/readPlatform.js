@@ -41,6 +41,7 @@ class ReadPlatform extends Component {
       showControlStation: false,
       showSaveModal: false,
       showListModal: false,
+      chapterPage: 1
     }
   }
 
@@ -166,6 +167,9 @@ class ReadPlatform extends Component {
     if (pageX > Dimen.window.width / 3 && pageX < Dimen.window.width * 2 / 3
           && pageY > Dimen.window.height / 3 && pageY < Dimen.window.height * 2 / 3) {
       this.setState({showControlStation: true})
+    } else {
+      this._scrollView.scrollTo({x: 0, y: Dimen.window.height * this.state.chapterPage, animated: false})
+      this.setState({chapterPage: this.state.chapterPage + 1})
     }
   }
 
@@ -241,11 +245,14 @@ class ReadPlatform extends Component {
         <Image source={require('../imgs/read_bg.jpg')} style={{width: Dimen.window.width, height: Dimen.window.height}}>
           {readPlatform.chapterDetail ?
             <ScrollView
-              onContentSizeChange={() => this._scrollView.scrollTo({x: 0, y: 0, animated: false})}
+              onContentSizeChange={() => {
+                this._scrollView.scrollTo({x: 0, y: 0, animated: false})
+                this.setState({chapterPage: 1})
+              }}
               ref={(ref) => this._scrollView = ref}
               style={{flex: 1}}
               showsVerticalScrollIndicator={false}>
-              <Text style={styles.textTitle}>{readPlatform.chapterDetail.title}</Text>
+              <Text style={styles.textTitle}>{readPlatform.bookChapter.chapters[readPlatform.chapterNum].title}</Text>
               <Text 
                 onStartShouldSetResponder={() => true}
                 onResponderRelease={(evt) => {this._showControlStation(evt)}}
@@ -301,12 +308,10 @@ class ReadPlatform extends Component {
               <Text style={styles.controlHeaderTitle} onPress={this._toBookCommunity.bind(this)}>社区</Text>
               <Text style={styles.controlHeaderTitle} onPress={this._toBookDetail.bind(this)}>简介</Text>
             </View>
-            <View 
-              onStartShouldSetResponder={() => true}
-              onResponderGrant={(evt) => {
-                this.setState({showControlStation: false})
-                }}
-              style={{flex: 1}}></View>
+            <Text 
+              onPress={() => {this.setState({showControlStation: false})}}
+              style={{flex: 1}}>
+            </Text>
             <View style={[styles.control,{height: 50}]}>
               <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
                 <Icon 

@@ -24,13 +24,14 @@ import Dimen from '../../utils/dimensionsUtil'
 import {dateFormat} from '../../utils/formatUtil'
 import Toast from '../../weight/toast'
 
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+
 export default class Bookshelves extends Component {
 
   constructor(props) {
     super(props)
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
-      bookshelves: ds.cloneWithRows([]),
+      bookshelves: [],
       toShow: false,
       focusBook: null
     }
@@ -46,7 +47,7 @@ export default class Bookshelves extends Component {
 
   _getBookshelves() {
     this.setState({
-      bookshelves: this.state.bookshelves.cloneWithRows(realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true))
+      bookshelves: realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true)
     })
   }
 
@@ -84,7 +85,7 @@ export default class Bookshelves extends Component {
       }, true)
     })
     this.setState({
-      bookshelves: this.state.bookshelves.cloneWithRows(realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true)),
+      bookshelves: realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true),
       toShow: false
     })
   }
@@ -118,7 +119,7 @@ export default class Bookshelves extends Component {
       }, true)
     })
     this.setState({
-      bookshelves: this.state.bookshelves.cloneWithRows(realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true)),
+      bookshelves: realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true),
       toShow: false
     })
   }
@@ -140,7 +141,7 @@ export default class Bookshelves extends Component {
       realm.create('HistoryBook', {bookId: bookDetail.bookId, isToShow: 0}, true)
     })
     this.setState({
-      bookshelves: this.state.bookshelves.cloneWithRows(realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true)),
+      bookshelves: realm.objects('HistoryBook').filtered('isToShow = 1').sorted('sortNum', true),
       toShow: false,
       focusBook: null
     })
@@ -173,13 +174,15 @@ export default class Bookshelves extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        {this.state.bookshelves ? 
+        {this.state.bookshelves && this.state.bookshelves.length > 0 ? 
           <ListView
             enableEmptySections={true}
-            dataSource={this.state.bookshelves}
+            dataSource={ds.cloneWithRows(this.state.bookshelves)}
             renderRow={this.renderBookshelves.bind(this)}/>
           : 
-          <Text style={{alignSelf: 'center'}}>您还没有收藏过任何书籍哦~~</Text>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text >您还没有收藏过任何书籍哦~~</Text>
+          </View>
         }
         {this.state.focusBook ?
             <Modal

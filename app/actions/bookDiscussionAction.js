@@ -13,71 +13,35 @@ import api from '../common/api'
 export let bookDiscussionList = (params, isFirst, oldList) => {
   return dispatch => {
     dispatch(loadingBookDiscussionList(isFirst))
-    return request.get(api.COMMUNITY_BOOK_DISCUSSION_LIST, params)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookDiscussionListSuccess(data.posts, oldList))
-        } else {
-          dispatch(getBookDiscussionListSuccess([], oldList))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookDiscussionListSuccess([], oldList))
-      })
+    return request.get(api.COMMUNITY_BOOK_DISCUSSION_LIST, params,
+      (data) => {data.ok ? dispatch(getBookDiscussionListSuccess(data.posts, oldList)) : dispatch(getBookDiscussionListSuccess([], oldList))},
+      (error) => {dispatch(getBookDiscussionListSuccess([], oldList))})
   }
 }
 
 export let bookDiscussionDetail = (id) => {
   return dispatch => {
     dispatch(loadingBookDiscussionDetail())
-    return request.get(api.COMMUNITY_BOOK_DISCUSSION_DETAIL(id), null)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookDiscussionDetailSuccess(data.post))
-        } else {
-          dispatch(getBookDiscussionDetailSuccess(null))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookDiscussionDetailSuccess(null))
-      })
+    return request.get(api.COMMUNITY_BOOK_DISCUSSION_DETAIL(id), null,
+      (data) => {data.ok ? dispatch(getBookDiscussionDetailSuccess(data.post)) : dispatch(getBookDiscussionDetailSuccess(null))},
+      (error) => {dispatch(getBookDiscussionDetailSuccess(null))})
   }
 }
 
 export let bookDiscussionDetailCommentBest = (id) => {
   return dispatch => {
-    return request.get(api.COMMUNITY_BOOK_COMMENT_BEST(id), null)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookDiscussionCommentBestSuccess(data.comments))
-        } else {
-          dispatch(getBookDiscussionCommentBestSuccess([]))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookDiscussionCommentBestSuccess([]))
-      })
+    return request.get(api.COMMUNITY_BOOK_COMMENT_BEST(id), null,
+      (data) => {data.ok ? dispatch(getBookDiscussionCommentBestSuccess(data.comments)) : dispatch(getBookDiscussionCommentBestSuccess([]))},
+      (error) => {dispatch(getBookDiscussionCommentBestSuccess([]))})
   }
 }
 
 export let bookDiscussionDetailCommentList = (id, params, isFirst, oldList) => {
   return dispatch => {
     dispatch(loadingBookDiscussionComment(isFirst))
-    return request.get(api.COMMUNITY_BOOK_DISCUSSION_COMMENT_LIST(id), params)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getBookDiscussionCommentListSuccess(data.comments, oldList))
-        } else {
-          dispatch(getBookDiscussionCommentListSuccess([], oldList))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getBookDiscussionCommentListSuccess([], oldList))
-      })
+    return request.get(api.COMMUNITY_BOOK_DISCUSSION_COMMENT_LIST(id), params,
+      (data) => {data.ok ? dispatch(getBookDiscussionCommentListSuccess(data.comments, oldList)) : dispatch(getBookDiscussionCommentListSuccess([], oldList))},
+      (error) => {dispatch(getBookDiscussionCommentListSuccess([], oldList))})
   }
 }
 

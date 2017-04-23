@@ -52,61 +52,38 @@ export default class BookDetail extends Component {
       this._getBookDetail(bookId)
       this._getHotReview(bookId)
       this._getRecommendBookList(bookId)
-      this.hasSaveBook(bookId)
+      this._hasSaveBook(bookId)
     })
   }
 
   componentWillReceiveProps() {
     var bookId = this.props.bookId
-    this.hasSaveBook(bookId)
+    this._hasSaveBook(bookId)
   }
 
   _getBookDetail(bookId) {
-    request.get(api.BOOK_DETAIL(bookId), null)
-      .then((data) => {
-        this.setState({bookDetail: data})
-      })
-      .catch((err) => {
-        console.log(err)
-        this.setState({bookDetail: null})
-      })
+    request.get(api.BOOK_DETAIL(bookId), null,
+      (data) => {this.setState({bookDetail: data})},
+      (error) => {this.setState({bookDetail: null})})
   }
 
   _getHotReview(bookId) {
-    request.get(api.BOOK_HOT_REVIEW, {book: bookId})
-      .then((data) => {
-        if(data.ok){
-          this.setState({hotReview: data.reviews})
-        } else {
-          this.setState({hotReview: []})
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        this.setState({hotReview: []})
-      })
+    request.get(api.BOOK_HOT_REVIEW, {book: bookId},
+      (data) => {data.ok ? this.setState({hotReview: data.reviews}) : this.setState({hotReview: []})},
+      (error) => {this.setState({hotReview: []})})
   }
 
   _getRecommendBookList(bookId) {
-    request.get(api.BOOK_RECOMMEND_BOOK_LIST(bookId), {limit: 3})
-      .then((data) => {
-        if(data.ok){
-          this.setState({recommendBookList: data.booklists})
-        } else {
-          this.setState({recommendBookList: []})
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        this.setState({recommendBookList: []})
-      })
+    request.get(api.BOOK_RECOMMEND_BOOK_LIST(bookId), {limit: 3},
+      (data) => {data.ok ? this.setState({recommendBookList: data.booklists}) : this.setState({recommendBookList: []})},
+      (error) => {this.setState({recommendBookList: []})})
   }
 
   /**
    * 是否已经保存过当前书籍
    * @param {string} bookId 书籍id
    */
-  hasSaveBook(bookId) {
+  _hasSaveBook(bookId) {
     var book = realm.objectForPrimaryKey('HistoryBook', bookId)
     this.setState({hasSaveBook: book ? (book.isToShow === 0 ? false : true) : false})
     console.log('是否已经保存过当前书籍', book ? book.isToShow : 0)
@@ -156,7 +133,7 @@ export default class BookDetail extends Component {
     } else {
       this.saveBookToRealm(bookDetail)
     }
-    this.hasSaveBook(bookDetail._id)
+    this._hasSaveBook(bookDetail._id)
   }
 
   /**

@@ -54,18 +54,9 @@ export default class BookListDetail extends Component {
 
   _getBookListDetailData(id) {
     this.setState({isLoadingDetail: true})
-    request.get(api.DISCOVER_BOOK_LIST_DETAIL(id), null)
-      .then((data) => {
-        if (data.ok && data.bookList._id) {
-          this.setState({isLoadingDetail: false, bookListDetail: data.bookList})
-        } else {
-          this.setState({isLoadingDetail: false, bookListDetail: null})
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        this.setState({isLoadingDetail: false, bookListDetail: null})
-      })
+    request.get(api.DISCOVER_BOOK_LIST_DETAIL(id), null,
+      (data) => {data.ok && data.bookList._id ? this.setState({isLoadingDetail: false, bookListDetail: data.bookList}) : this.setState({isLoadingDetail: false, bookListDetail: null})},
+      (error) => {this.setState({isLoadingDetail: false, bookListDetail: null})})
   }
 
   /**
@@ -152,6 +143,24 @@ export default class BookListDetail extends Component {
     )
   }
 
+  renderBookListHeader() {
+    return (
+      <View style={styles.bodyHeader}>
+        <Text style={styles.itemTitle}>{this.state.bookListDetail.title}</Text>
+        <Text style={styles.itemDesc}>{this.state.bookListDetail.desc}</Text>
+        <Text style={styles.itemDesc}>{'共' + this.state.bookListDetail.total + '本书 | 被收藏' + this.state.bookListDetail.collectorCount + '次'}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 14}}>
+          <Image 
+            style={styles.bodyHeaderImage}
+            source={this.state.bookListDetail.author.avatar 
+              ? {uri: (api.IMG_BASE_URL + this.state.bookListDetail.author.avatar)} 
+              : require('../../imgs/splash.jpg')}/>
+          <Text style={styles.bodyHeaderAuthor}>{this.state.bookListDetail.author.nickname}</Text>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -168,26 +177,12 @@ export default class BookListDetail extends Component {
             onPress={this._collectToMine.bind(this)}>收藏</Text>
         </View>
         {this.state.bookListDetail ?
-            <ScrollView style={styles.body}>
-              <View style={styles.bodyHeader}>
-                <Text style={styles.itemTitle}>{this.state.bookListDetail.title}</Text>
-                <Text style={styles.itemDesc}>{this.state.bookListDetail.desc}</Text>
-                <Text style={styles.itemDesc}>{'共' + this.state.bookListDetail.total + '本书 | 被收藏' + this.state.bookListDetail.collectorCount + '次'}</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 14}}>
-                  <Image 
-                    style={styles.bodyHeaderImage}
-                    source={this.state.bookListDetail.author.avatar 
-                      ? {uri: (api.IMG_BASE_URL + this.state.bookListDetail.author.avatar)} 
-                      : require('../../imgs/splash.jpg')}/>
-                  <Text style={styles.bodyHeaderAuthor}>{this.state.bookListDetail.author.nickname}</Text>
-                </View>
-              </View>
-              <ListView
-                style={{backgroundColor: config.css.color.line}}
-                enableEmptySections={true}
-                dataSource={ds.cloneWithRows(this.state.bookListDetail.books)}
-                renderRow={this.renderBookList.bind(this)}/>
-            </ScrollView>
+            <ListView
+              style={{backgroundColor: config.css.color.line}}
+              enableEmptySections={true}
+              dataSource={ds.cloneWithRows(this.state.bookListDetail.books)}
+              renderHeader={this.renderBookListHeader.bind(this)}
+              renderRow={this.renderBookList.bind(this)}/>
           : 
             <Text style={styles.body}>暂无数据</Text>
         }

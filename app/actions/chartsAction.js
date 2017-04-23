@@ -13,36 +13,18 @@ import api from '../common/api'
 export let charts = () => {
   return dispatch => {
     dispatch(loadingCharts())
-    return request.get(api.DISCOVER_CHARTS, null)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getChartsSuccess(data))
-        } else {
-          dispatch(getChartsSuccess(null))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getChartsSuccess(null))
-      })
+    return request.get(api.DISCOVER_CHARTS, null,
+      (data) => {data.ok ? dispatch(getChartsSuccess(data)) : dispatch(getChartsSuccess(null))},
+      (error) => {dispatch(getChartsSuccess(null))})
   }
 }
 
 export let chartsDetail = (id) => {
   return dispatch => {
     dispatch(loadingChartsDetail())
-    return request.get(api.DISCOVER_CHARTS_DETAIL(id), null)
-      .then((data) => {
-        if (data.ok) {
-          dispatch(getChartsDetailSuccess(data.ranking))
-        } else {
-          dispatch(getChartsDetailSuccess(null))
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        dispatch(getChartsDetailSuccess(null))
-      })
+    return request.get(api.DISCOVER_CHARTS_DETAIL(id), null,
+      (data) => {data.ok ? dispatch(getChartsDetailSuccess(data.ranking)) : dispatch(getChartsDetailSuccess(null))},
+      (error) => {dispatch(getChartsDetailSuccess(null))})
   }
 }
 

@@ -95,6 +95,9 @@ def getPassword(String currentUser, String keyChain) {
       stdout.toString().trim()
 }
 def pass = getPassword("maiyatang","maiyatang.jks")
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
 
 android {
     compileSdkVersion 23
@@ -143,6 +146,12 @@ android {
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
                         versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+            }
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                // 输出apk名称为boohee_v1.0_2015-01-15_wandoujia.apk
+                def fileName = "book_${defaultConfig.versionName}_${releaseTime()}.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
             }
         }
     }

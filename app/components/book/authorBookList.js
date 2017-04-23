@@ -44,21 +44,9 @@ export default class AuthorBookList extends Component {
 
   _getBookListDetail(params) {
     this.setState({isLoading: true})
-    request.get(api.BOOK_AUTHOR_BOOK_LIST, params)
-      .then((data) => {
-        if (data.ok) {
-          this.setState({
-            isLoading: false,
-            bookList: data.books
-          })
-        } 
-      })
-      .catch((err) => {
-        console.log(err)
-        this.setState({
-          isLoading: false,
-        })
-      })
+    request.get(api.BOOK_AUTHOR_BOOK_LIST, params,
+      (data) => {data.ok ? this.setState({isLoading: false, bookList: data.books}) : null},
+      (error) => {this.setState({isLoading: false})})
   }
 
   _back() {

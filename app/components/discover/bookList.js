@@ -55,17 +55,8 @@ export default class BookList extends Component {
   }
 
   _getBookListTag() {
-    request.get(api.DISCOVER_BOOK_LIST_TAG, null)
-      .then((data) => {
-        if (data.ok) {
-          this.setState({
-            bookListTags: data.data,
-          })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    request.get(api.DISCOVER_BOOK_LIST_TAG, null,
+      (data) => {data.ok ? this.setState({bookListTags: data.data}) : null})
   }
 
   _showTags() {

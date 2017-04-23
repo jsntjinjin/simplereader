@@ -50,8 +50,8 @@ export default class TagBookList extends Component {
     } else {
       this.setState({isLoadingMore: true})
     }
-    request.get(api.BOOK_TAG_BOOK_LIST, params)
-      .then((data) => {
+    request.get(api.BOOK_TAG_BOOK_LIST, params,
+      (data) => {
         if (data.ok) {
           if (this.state.bookList.length === 0) {
             this.setState({
@@ -64,21 +64,17 @@ export default class TagBookList extends Component {
               bookList: this.state.bookList.concat(data.books)
             })
           }
-          
         } else {
           this.setState({
             isLoading: false,
             isLoadingMore: false,
           })
-        }
-      })
-      .catch((err) => {
-        console.log(err)
+        }},
+      (error) => {
         this.setState({
           isLoading: false,
           isLoadingMore: false,
-        })
-      })
+        })})
   }
 
   _setParams(tag, start) {
