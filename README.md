@@ -17,29 +17,20 @@ android下载地址: http://oouqiilcr.bkt.clouddn.com/book_1.0_2017-04-23.apk
 ## 截图
 * 首页
 
-<img src="http://oouqiilcr.bkt.clouddn.com/%E9%A6%96%E9%A1%B5.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/home%E5%8F%91%E7%8E%B0.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/home%E7%A4%BE%E5%8C%BA.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E9%A6%96%E9%A1%B5.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/home%E5%8F%91%E7%8E%B0.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/home%E7%A4%BE%E5%8C%BA.png?raw=true" width="280"/>
 
 * book
 
-<img src="http://oouqiilcr.bkt.clouddn.com/%E6%90%9C%E7%B4%A2.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B9%A6%E7%B1%8D%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E9%98%85%E8%AF%BB%E5%99%A8.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E6%90%9C%E7%B4%A2.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E4%B9%A6%E7%B1%8D%E8%AF%A6%E6%83%85.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E9%98%85%E8%AF%BB%E5%99%A8.png?raw=true" width="280"/>
 
 * 排行榜
 
-<img src="http://oouqiilcr.bkt.clouddn.com/%E6%8E%92%E8%A1%8C%E6%A6%9C.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E6%8E%92%E8%A1%8C%E6%A6%9C%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E6%8E%92%E8%A1%8C%E6%A6%9C.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E6%8E%92%E8%A1%8C%E6%A6%9C%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
 
 * 书单
 
-<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%951.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%952.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%95%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E5%88%86%E7%B1%BB.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%951.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%952.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E4%B8%BB%E9%A2%98%E4%B9%A6%E5%8D%95%E8%AF%A6%E6%83%85.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E5%88%86%E7%B1%BB.png?raw=true" width="280"/>
 
 * 社区
 
-<img src="http://oouqiilcr.bkt.clouddn.com/%E7%A4%BE%E5%8C%BA.png?raw=true" width="280"/>
-<img src="http://oouqiilcr.bkt.clouddn.com/%E7%A4%BE%E5%8C%BA%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
+<img src="http://oouqiilcr.bkt.clouddn.com/%E7%A4%BE%E5%8C%BA.png?raw=true" width="280"/> <img src="http://oouqiilcr.bkt.clouddn.com/%E7%A4%BE%E5%8C%BA%E8%AF%A6%E6%83%85.png?raw=true" width="280"/>
