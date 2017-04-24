@@ -77,7 +77,7 @@ export let dateFormat = (date) => {
     return ''
   } else {
     let temp = date.replace('T', ' ').split('.')[0]
-    return _getDescriptionTimeFromDate(Date.parse(temp))
+    return _getDescriptionTimeFromDate(parseDate(temp))
   }
 }
 
@@ -89,4 +89,20 @@ export let wordCountFormat = (wordCount) => {
   } else {
       return wordCount + '字';
   }
+}
+
+export let parseDate = (date) => {
+  var isoExp, parts
+  isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s(\d\d):(\d\d):(\d\d)\s*$/
+  try {
+    parts = isoExp.exec(date)
+  } catch (error) {
+    return date
+  }
+  if (parts) {
+    date = new Date(parts[1], parts[2] - 1, parts[3], parts[4], parts[5], parts[6]).getTime()
+  } else {
+    return date
+  }
+  return date
 }

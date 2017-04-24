@@ -13,7 +13,8 @@ import {
   View,
   ScrollView,
   ListView,
-  Modal
+  Modal,
+  Platform
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1, 
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    marginTop: config.css.headerHeight
+    paddingTop: config.css.headerHeight - (Platform.OS === 'ios' ? 0 : 20)
   },
   listView: {
     backgroundColor: config.css.color.white,

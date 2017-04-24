@@ -93,7 +93,9 @@ let getBackToInitState = () => {
   return {
     type: types.SEARCH_BACK_TO_INIT_STATE,
     searchState: false, 
-    autoComplete: []
+    autoComplete: [],
+    searchData: [],
+    hotPart: 0
   }
 }
 

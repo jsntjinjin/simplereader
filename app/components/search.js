@@ -56,6 +56,8 @@ class Search extends Component {
     })
     if (searchW) {
       this._changeSearchWord(searchW)
+    } else {
+      dispatch(backToInitState())
     }
   }
 
