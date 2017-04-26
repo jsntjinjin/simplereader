@@ -12,7 +12,15 @@
 * [ ] 主题设置
 
 ## 体验下载
-android下载地址: http://oouqiilcr.bkt.clouddn.com/book_1.0_2017-04-23.apk
+android下载地址: http://oouqiilcr.bkt.clouddn.com/book_1.0_2017-04-26.apk
+
+## 安装
+
+1. git clone https://github.com/jsntjinjin/simplereader.git
+2. cd simplereader
+3. npm install
+4. react-native link
+5. react-native run-ios / react-native run-android
 
 ## 截图
 * 首页
