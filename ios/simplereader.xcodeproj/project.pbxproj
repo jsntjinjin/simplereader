@@ -23,8 +23,6 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		22B9F9541EA8DF8300BB1C06 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 22B9F9531EA8DF8300BB1C06 /* assets */; };
-		22B9F9711EA8DF8A00BB1C06 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 22B9F9701EA8DF8A00BB1C06 /* main.jsbundle */; };
 		2B902DB1F66E40D9A930ACBF /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C71B968C7B5349A488A3DE5F /* SimpleLineIcons.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -283,8 +281,6 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = simplereader/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = simplereader/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		22B9F9531EA8DF8300BB1C06 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../release_ios/assets; sourceTree = "<group>"; };
-		22B9F9701EA8DF8A00BB1C06 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.jsbundle; path = ../release_ios/main.jsbundle; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* simplereader-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "simplereader-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* simplereader-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "simplereader-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3950858DD73B42DFA1CC049E /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
@@ -542,8 +538,6 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				22B9F9701EA8DF8A00BB1C06 /* main.jsbundle */,
-				22B9F9531EA8DF8300BB1C06 /* assets */,
 				13B07FAE1A68108700A75B9A /* simplereader */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* simplereaderTests */,
@@ -961,12 +955,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22B9F9541EA8DF8300BB1C06 /* assets in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				A0D96B02E8204A93822B2838 /* Entypo.ttf in Resources */,
 				3B50B4FAB9864BF390FE9D6B /* EvilIcons.ttf in Resources */,
-				22B9F9711EA8DF8A00BB1C06 /* main.jsbundle in Resources */,
 				583067D59D8A4F6191D2EDC5 /* FontAwesome.ttf in Resources */,
 				CBC40A37FDD84122B1E5F7B0 /* Foundation.ttf in Resources */,
 				9BB623F7DD1D4EBBA75C3F13 /* Ionicons.ttf in Resources */,
