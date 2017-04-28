@@ -5,14 +5,13 @@
 项目基于ReactNative + Redux的框架开发。项目中的API均来自追书神器，纯属共享学习之用，不得用于商业！！
 
 ## TODO
-* [ ] 阅读器分页效果(native本地化)
 * [ ] 阅读器设置功能,书签功能
 * [ ] 缓存书籍到本地
 * [ ] wifi传书(native本地化)
 * [ ] 主题设置
 
 ## 体验下载
-android下载地址: http://oouqiilcr.bkt.clouddn.com/book_1.0_2017-04-26.apk
+android下载地址: http://oouqiilcr.bkt.clouddn.com/book_1.0_2017-04-28.apk
 
 ## 安装
 
