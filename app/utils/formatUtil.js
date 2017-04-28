@@ -6,6 +6,12 @@
 
 'use strict'
 
+import {
+  PixelRatio
+} from 'react-native'
+
+import Dimen from '../utils/dimensionsUtil'
+
 const ONE_MINUTE = 60000;
 const ONE_HOUR = 3600000;
 const ONE_DAY = 86400000;
@@ -91,6 +97,14 @@ export let wordCountFormat = (wordCount) => {
   }
 }
 
+export let timeFormat = () => {
+  let temp = new Date()
+  var h = temp.getHours()
+  var minute = temp.getMinutes()
+  minute = minute < 10 ? ('0' + minute) : minute
+  return h + ':' + minute
+}
+
 export let parseDate = (date) => {
   var isoExp, parts
   isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s(\d\d):(\d\d):(\d\d)\s*$/
@@ -106,3 +120,125 @@ export let parseDate = (date) => {
   }
   return date
 }
+
+export let contentFormat = (content) => {
+  let fontCount = parseInt(Dimen.window.width / 18 - 1)
+  let fontLines = parseInt((Dimen.window.height - 100) / 34)
+  const length = content.length
+  let array = []
+  let x = 0, y, m = 0
+  while (x < length) {
+    let _array = []
+    for (var i = 0; i <= fontLines; i++) {
+      let str = content.substring(x, x + fontCount)
+      if (str.indexOf('@') != -1) {
+        y = x + str.indexOf('@') + 1
+        _array[i] = content.substring(x, y).replace('@', '')
+        x = y
+        continue
+      } else {
+        y = x + fontCount
+        _array[i] = content.substring(x, y)
+        x = y
+        continue
+      }
+    }
+     array[m] = _array
+    m++
+  }
+  return array
+}
+
+// export let contentFormat = (content) => {
+//   const length = content.length
+//   var array = []
+//   let x = 0,y,m = 0
+//   while (x < length) {
+//     let _array = []
+//     for (let i = 0; i <= 16; i++) {
+//       let str_spa = content.substring(x, x + 1)
+//       let str_sto = content.substring(x, x + 18)
+//       const re = /^\s+$/
+//       if (str_sto.indexOf('”') != -1) {
+//         y = x + str_sto.indexOf('”') + 1
+//         _array[i] = content.substring(x, y)
+//         x = y
+//         continue
+//       }
+//       else if (str_sto.indexOf('。') != -1 ) {
+//         y = x + str_sto.indexOf('。') + 1
+//         if (re.exec(content.substring(y, y + 1))) {
+//           y = x + str_sto.indexOf('。') + 1
+//           _array[i] = content.substring(x, y)
+//           x = y
+//           continue
+//         }
+//         else {
+//           if (str_sto.indexOf('！') != -1) {
+//             y = x + str_sto.indexOf('！') + 1
+//             _array[i] = content.substring(x, y)
+//             x = y
+//             continue
+//           }
+//           else {
+//             y = x + 18
+//             _array[i] = content.substring(x, y)
+//             x = y
+//             continue
+//           }
+//         }
+//       }
+//       else if (str_sto.indexOf('！') != -1) {
+//         y = x + str_sto.indexOf('！') + 1
+//         if (re.exec(content.substring(y, y + 1))) {
+//           y = x + str_sto.indexOf('！') + 1
+//           _array[i] = content.substring(x, y)
+//           x = y
+//           continue
+//         }
+//         else {
+//           y = x + 18
+//           _array[i] = content.substring(x, y)
+//           x = y
+//           continue
+//         }
+//       }
+//       else if (str_sto.indexOf('？') != -1){
+//         y = x + str_sto.indexOf('？') + 1
+//         if (re.exec(content.substring(y, y + 1))) {
+//           y = x + str_sto.indexOf('？') + 1
+//           _array[i] = content.substring(x, y)
+//           x = y
+//           continue
+//         }
+//         else {
+//           y = x + 18
+//           _array[i] = content.substring(x, y)
+//           x = y
+//           continue
+//         }
+//       }
+//       else if (re.exec(str_spa)) {
+//         y = x + 24
+//         if (content.substring(x,y).indexOf('。') != -1) {
+//           y = x + content.substring(x,y).indexOf('。') + 1
+//           _array[i] = content.substring(x, y)
+//           x = y
+//           continue
+//         }
+//         _array[i] = content.substring(x, y)
+//         x = y
+//         continue
+//       }
+//       else {
+//         y = x + 18
+//         _array[i] = content.substring(x, y)
+//         x = y
+//       }
+//     }
+//     array[m] = _array
+//     m++
+//   }
+//   // console.log((m - 1) * 375);
+//   return array
+// }

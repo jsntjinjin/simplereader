@@ -16,7 +16,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  InteractionManager
+  InteractionManager,
+  Platform
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -26,13 +27,15 @@ import BookDetail from './bookDetail'
 import BookCommunity from './book/bookCommunity'
 import request from '../utils/httpUtil'
 import Dimen from '../utils/dimensionsUtil'
+import {timeFormat, contentFormat} from '../utils/formatUtil'
+import Toast from '../weight/toast'
+import Loading from '../weight/loading'
 import api from '../common/api'
 import config from '../common/config'
-import {bookChapter, chapterDetailFromNet}from '../actions/readPlatformAction'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-class ReadPlatform extends Component {
+export default class ReadPlatform extends Component {
 
   constructor(props) {
     super(props)
@@ -41,12 +44,20 @@ class ReadPlatform extends Component {
       showControlStation: false,
       showSaveModal: false,
       showListModal: false,
-      chapterPage: 1
+      bookChapter: null,
+      chapterDetail: [],
+      chapterNum: 0,
+      chapterLength: 0,
+      time: ''
     }
+    this.count = 0           // 偏移量临界值
+    this.currentChapter = '' // 当前章节的页数
+    this.nextChapter = ''    // 下一章节的页数
+    this.number = 0          // 当前章节的章数
+    this.x = 0               // 当前的偏移量
   }
 
   componentDidMount() {
-    const {dispatch} = this.props
     let bookId = this.props.bookId
     let book = realm.objectForPrimaryKey('HistoryBook', bookId)
     if (this.props.bookDetail) {
@@ -55,9 +66,174 @@ class ReadPlatform extends Component {
       this.setState({bookName: book.bookName})
     }
     InteractionManager.runAfterInteractions(()=>{
-      dispatch(bookChapter(bookId, book ? book.historyChapterNum : 0))
-      this._updateHistoryBookChapter(bookId, book ? book.historyChapterNum : 0)
+      this._getBookChapter(bookId, book ? book.historyChapterNum : 0)
     })
+  }
+
+  _getBookChapter(bookId, num) {
+    request.get(api.READ_BOOK_CHAPTER_LIST(bookId), null,
+      (data) => {
+        if(data.ok) {
+          this._getChapterDetailTwice(data.mixToc, num)
+        } else {
+          this.setState({bookChapter: null})
+        }
+      },
+      (error) => {this.setState({bookChapter: null})})
+  }
+
+  _getChapterDetailTwice(bookChapter, num) {
+    let chapterUrl = bookChapter.chapters[num].link
+    let tempUrl = chapterUrl.replace(/\//g, '%2F').replace('?', '%3F')
+    request.get(api.READ_BOOK_CHAPTER_DETAIL(tempUrl), null,
+      (data) => {
+        if (data.ok) {
+          let _currentChapter = data.chapter.body
+          let _arr = this._formatChapter(_currentChapter, num, bookChapter.chapters[num].title)
+          this.currentChapter = _arr.length
+          if (num + 1 >= bookChapter.chapters.length) {
+            this.setState({
+              bookChapter: bookChapter, 
+              chapterDetail: _arr, 
+              chapterNum: num, 
+              chapterLength: bookChapter.chapters.length,
+              time: timeFormat()
+            })
+          } else {
+            let nextTempUrl = bookChapter.chapters[num + 1].link.replace(/\//g, '%2F').replace('?', '%3F')
+            request.get(api.READ_BOOK_CHAPTER_DETAIL(nextTempUrl), null,
+              (data) => {
+                if (data.ok) {
+                  let _nextChapter = data.chapter.body
+                  let _arr2 = this._formatChapter(_nextChapter, num + 1, bookChapter.chapters[num + 1].title)
+                  this.nextChapter = _arr2.length
+                  _arr = _arr.concat(_arr2)
+                  this.setState({
+                    bookChapter: bookChapter, 
+                    chapterDetail: _arr, 
+                    chapterNum: num, 
+                    chapterLength: bookChapter.chapters.length,
+                    time: timeFormat()
+                  })}})
+          }
+        } else {
+          Toast.toastShort('加载失败,请重试')
+        }},
+      (error) => {Toast.toastShort('加载失败,请重试')})
+  }
+
+  _chapterDetailFromNet(url, num) {
+    let tempUrl = url.replace(/\//g, '%2F').replace('?', '%3F')
+    let tempChapterDetail = null
+    request.get(api.READ_BOOK_CHAPTER_DETAIL(tempUrl), null,
+      (data) => {
+        data.ok
+        ? tempChapterDetail = data.chapter.body
+        : Toast.toastShort('加载失败,请重试')},
+      (error) => {Toast.toastShort('加载失败,请重试')})
+    return tempChapterDetail
+  }
+
+  _formatChapter(content, num, title) {
+    let _arr =[]
+    let _content = '\u3000\u3000' + content.replace(/\n/g, '@\u3000\u3000')
+    let _arrTemp = contentFormat(_content)
+    _arrTemp.forEach(function(element) {
+      let _chapterInfo = {
+        title: title,
+        num: num,
+        content: element
+      }
+      _arr.push(_chapterInfo)
+    });
+    return _arr
+  }
+
+  handleScroll(e) {
+    // console.log('e.nativeEvent.contentOffset.x', e.nativeEvent.contentOffset.x)
+    let arr = []
+    let chapterInfo
+    // let listView = this.refs.listView
+    let x = e.nativeEvent.contentOffset.x
+    if (this.count === 0) {
+      this.count = (this.currentChapter - 1) * Dimen.window.width
+    }
+
+    this.x = x
+    if ( x > this.count) {
+      this.a = this.count
+      this.count += this.nextChapter * Dimen.window.width
+      // 获取下一章节
+      if (this.state.chapterNum + 2 < this.state.chapterLength) {
+        let tempUrl = this.state.bookChapter.chapters[this.state.chapterNum + 2].link.replace(/\//g, '%2F').replace('?', '%3F')
+        request.get(api.READ_BOOK_CHAPTER_DETAIL(tempUrl), null,
+          (data) => {
+            if (data.ok) {
+              let tempArr = this._formatChapter(data.chapter.body, this.state.chapterNum + 2, this.state.bookChapter.chapters[this.state.chapterNum + 2].title)
+              this._updateHistoryBookChapter(this.props.bookId, this.state.chapterNum + 1)
+              this.setState({
+                chapterDetail: this.state.chapterDetail.concat(tempArr), 
+                chapterNum: this.state.chapterNum + 1,
+                time: timeFormat()
+              })
+            } else {
+              Toast.toastShort('获取下一章节失败~~')
+            }},
+          (error) => {Toast.toastShort('获取下一章节失败~~')})
+      } else {
+        Toast.toastShort('已到达最后一页~~')
+      }
+    }
+    
+    if (Platform.OS === 'ios') {
+      if (x < 0 && this.state.chapterNum === 0) {
+          Toast.toastShort('已到达第一页~~')
+      }
+
+      if (x < 0 && this.state.chapterNum !== 0) {
+        let tempUrl = this.state.bookChapter.chapters[this.state.chapterNum - 1].link.replace(/\//g, '%2F').replace('?', '%3F')
+        request.get(api.READ_BOOK_CHAPTER_DETAIL(tempUrl), null,
+          (data) => {
+            if (data.ok) {
+              let tempArr = this._formatChapter(data.chapter.body, this.state.chapterNum - 1, this.state.bookChapter.chapters[this.state.chapterNum - 1].title)
+              this._updateHistoryBookChapter(this.props.bookId, this.state.chapterNum - 1)
+              this.setState({
+                chapterDetail: tempArr.concat(this.state.chapterDetail), 
+                chapterNum: this.state.chapterNum - 1,
+                time: timeFormat()
+              })
+              let scrollView = this.refs.scrollView
+              scrollView.scrollTo({x: (tempArr.length - 1) * Dimen.window.width, y: 0, animated: false})
+            } else {
+              Toast.toastShort('获取上一章节失败~~')
+            }},
+          (error) => {Toast.toastShort('获取上一章节失败~~')})
+      }
+    } else {
+      if (x === 0 && this.state.chapterNum === 0) {
+          Toast.toastShort('已到达第一页~~')
+      }
+
+      if (x === 0 && this.state.chapterNum !== 0) {
+        let tempUrl = this.state.bookChapter.chapters[this.state.chapterNum - 1].link.replace(/\//g, '%2F').replace('?', '%3F')
+        request.get(api.READ_BOOK_CHAPTER_DETAIL(tempUrl), null,
+          (data) => {
+            if (data.ok) {
+              let tempArr = this._formatChapter(data.chapter.body, this.state.chapterNum - 1, this.state.bookChapter.chapters[this.state.chapterNum - 1].title)
+              this._updateHistoryBookChapter(this.props.bookId, this.state.chapterNum - 1)
+              this.setState({
+                chapterDetail: tempArr.concat(this.state.chapterDetail), 
+                chapterNum: this.state.chapterNum - 1,
+                time: timeFormat()
+              })
+              let scrollView = this.refs.scrollView
+              scrollView.scrollTo({x: (tempArr.length) * Dimen.window.width, y: 0, animated: false})
+            } else {
+              Toast.toastShort('获取上一章节失败~~')
+            }},
+          (error) => {Toast.toastShort('获取上一章节失败~~')})
+      }
+    }
   }
 
   _back() {
@@ -79,12 +255,11 @@ class ReadPlatform extends Component {
   }
 
   _toSaveAndPop() {
-    const {readPlatform} = this.props
     let bookId = this.props.bookId
     let book = realm.objectForPrimaryKey('HistoryBook', bookId)
     this._closeModal()
     if (!book || book.isToShow === 0) {
-      this.saveBookToRealm(this.props.bookDetail, readPlatform.chapterNum)
+      this.saveBookToRealm(this.props.bookDetail, this.state.chapterNum)
     }
     this._toPop()
   }
@@ -138,12 +313,11 @@ class ReadPlatform extends Component {
    * 进入书籍详情界面
    */
   _toBookDetail() {
-    const {readPlatform} = this.props
     this.props.navigator.push({
       name: 'bookDetail',
       component: BookDetail,
       params: {
-        bookId: '582c6357bfd78a18167e46f3'
+        bookId: this.state.bookChapter.book
       }
     })
   }
@@ -157,7 +331,7 @@ class ReadPlatform extends Component {
   }
 
   _clickListModalItem(rowID) {
-    this._nowChapter(rowID)
+    this._getChapterDetailTwice(this.state.bookChapter,rowID)
     this._closeListModal()
   }
 
@@ -167,31 +341,7 @@ class ReadPlatform extends Component {
     if (pageX > Dimen.window.width / 3 && pageX < Dimen.window.width * 2 / 3
           && pageY > Dimen.window.height / 3 && pageY < Dimen.window.height * 2 / 3) {
       this.setState({showControlStation: true})
-    } else {
-      this._scrollView.scrollTo({x: 0, y: Dimen.window.height * this.state.chapterPage, animated: false})
-      this.setState({chapterPage: this.state.chapterPage + 1})
     }
-  }
-
-  _lastChapter(chapterNum) {
-    const {dispatch, readPlatform} = this.props
-    let url = readPlatform.bookChapter.chapters[chapterNum - 1].link
-    dispatch(chapterDetailFromNet(url, chapterNum - 1))
-    this._updateHistoryBookChapter(this.props.bookId, chapterNum - 1)
-  }
-
-  _nowChapter(chapterNum) {
-    const {dispatch, readPlatform} = this.props
-    let url = readPlatform.bookChapter ? readPlatform.bookChapter.chapters[chapterNum].link : null
-    dispatch(chapterDetailFromNet(url, chapterNum))
-    this._updateHistoryBookChapter(this.props.bookId, chapterNum)
-  }
-
-  _nextChapter(chapterNum) {
-    const {dispatch, readPlatform} = this.props
-    let url = readPlatform.bookChapter.chapters[chapterNum + 1].link
-    dispatch(chapterDetailFromNet(url, chapterNum + 1))
-    this._updateHistoryBookChapter(this.props.bookId, chapterNum + 1)
   }
 
   _updateHistoryBookChapter(bookId, chapterNum){
@@ -210,13 +360,12 @@ class ReadPlatform extends Component {
   }
 
   renderListModal(rowData, sectionID, rowID, highlightRow) {
-    const {readPlatform} = this.props
     return (
       <TouchableOpacity 
         activeOpacity={0.5}
         onPress={() => this._clickListModalItem(parseInt(rowID))}>
         {
-          readPlatform.chapterNum !== parseInt(rowID) ?
+          this.state.chapterNum !== parseInt(rowID) ?
             <Text 
               numberOfLines={1}
               style={[styles.listModalText, {fontSize: config.css.fontSize.title, color: config.css.fontColor.title}]}>
@@ -233,8 +382,65 @@ class ReadPlatform extends Component {
     )
   }
 
+  renderListView() {
+    return(
+      <ListView
+        enableEmptySections
+        horizontal={true}
+        pagingEnabled={true}
+        initialListSize={1}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        removeClippedSubviews={false}
+        dataSource={ds.cloneWithRows(this.state.chapterDetail)}
+        renderRow={this.renderRow.bind(this)}/>
+    )
+  }
+
+  renderRow (rowData) {
+    return(
+      <View style={{flexDirection: 'row'}}>
+        <TouchableOpacity
+        style={{height: Dimen.window.height, width: Dimen.window.width}}
+        activeOpacity={1}>
+          {this.renderContent(rowData)}
+        </TouchableOpacity>
+       </View>
+    )
+  }
+  
+  renderContent(rowData) {
+    return(
+      <View 
+        style={{flex: 1, justifyContent: 'space-between'}} 
+        onStartShouldSetResponder={() => true}
+        onResponderRelease={(evt) => {this._showControlStation(evt)}}>
+        <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc, marginLeft: 10,marginTop:10, marginBottom: 10}}>
+          {rowData.title}
+        </Text>
+        <View style={{alignSelf: 'center', flex: 1}}>
+          {rowData.content ? rowData.content.map((value, index,chapterContent) => {
+            return (
+              <Text style={styles.ficContent} key={index}>
+                {value}
+              </Text>
+            )
+          }) : null }
+        </View>
+        <View style={{marginBottom: 10, flexDirection: 'row', justifyContent: 'space-around'}}>
+          <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>
+            {this.state.time}
+          </Text>
+          <Text style={{fontSize: config.css.fontSize.desc, color: config.css.fontColor.desc}}>
+            {(rowData.num + 1) + ' / ' + this.state.chapterLength}
+          </Text>
+        </View>
+      </View>
+
+    )
+  }
+
   render() {
-    const {readPlatform} = this.props
     return (
       <View style={styles.container}>
         <StatusBar 
@@ -243,57 +449,19 @@ class ReadPlatform extends Component {
           showHideTransition={'slide'}
           barStyle={'light-content'}/>
         <Image source={require('../imgs/read_bg.jpg')} style={{width: Dimen.window.width, height: Dimen.window.height}}>
-          {readPlatform.chapterDetail ?
+          {this.state.chapterDetail.length === 0 ? 
+            <Loading /> 
+            : 
             <ScrollView
-              onContentSizeChange={() => {
-                this._scrollView.scrollTo({x: 0, y: 0, animated: false})
-                this.setState({chapterPage: 1})
-              }}
-              ref={(ref) => this._scrollView = ref}
-              style={{flex: 1}}
-              showsVerticalScrollIndicator={false}>
-              <Text style={styles.textTitle}>{readPlatform.bookChapter.chapters[readPlatform.chapterNum].title}</Text>
-              <Text 
-                onStartShouldSetResponder={() => true}
-                onResponderRelease={(evt) => {this._showControlStation(evt)}}
-                style={styles.textBody}>
-                {readPlatform.chapterDetail.body}
-              </Text>
-              <View style={{height: 50, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                {readPlatform.chapterNum != 0 ?
-                  <TouchableOpacity 
-                    activeOpacity={0.5}
-                    onPress={() => this._lastChapter(readPlatform.chapterNum)}
-                    style={{flexDirection: 'row', alignItems: 'center', marginLeft: 14}}>
-                    <Icon 
-                      name='ios-arrow-back-outline'
-                      size={15}
-                      color={config.css.fontColor.desc}>
-                    </Icon>
-                    <Text style={{fontSize: config.css.fontSize.desc,marginLeft: 5}}>上一章</Text>
-                  </TouchableOpacity>
-                : 
-                  <View></View>
-                }
-                <TouchableOpacity 
-                  activeOpacity={0.5}
-                  onPress={() => this._nextChapter(readPlatform.chapterNum)}
-                  style={{flexDirection: 'row', alignItems: 'center', marginRight: 14}}>
-                  <Text style={{fontSize: config.css.fontSize.desc,marginRight: 5}}>下一章</Text>
-                  <Icon 
-                    name='ios-arrow-forward-outline'
-                    size={15}
-                    color={config.css.fontColor.desc}>
-                  </Icon>
-                </TouchableOpacity>
-              </View>
+              ref='scrollView'
+              scrollEventThrottle={800}
+              horizontal={true}
+              onScroll={(e)=>this.handleScroll(e)}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              pagingEnabled={true} >
+              {this.renderListView()}
             </ScrollView>
-          :
-            <Text 
-              style={{flex: 1, textAlign: 'center'}}
-              onPress={() => this._nowChapter(readPlatform.chapterNum)}>
-              网络错误,请点击重试
-            </Text>
           }
         </Image>
         {this.state.showControlStation ?
@@ -380,7 +548,7 @@ class ReadPlatform extends Component {
             <ListView 
               style={styles.innerListView}
               enableEmptySections={true}
-              dataSource={ds.cloneWithRows(readPlatform.bookChapter ? readPlatform.bookChapter.chapters : [])}
+              dataSource={ds.cloneWithRows(this.state.bookChapter ? this.state.bookChapter.chapters : [])}
               renderRow={this.renderListModal.bind(this)}/>
           </TouchableOpacity>
         </Modal>
@@ -406,6 +574,11 @@ const styles = StyleSheet.create({
     fontSize: config.css.fontSize.title,
     color: config.css.fontColor.title,
     lineHeight: 30
+  },
+  ficContent: {
+    color: '#604733',
+    fontSize: 18,
+    lineHeight:34,
   },
   control: {
     height: config.css.headerHeight,
@@ -491,12 +664,3 @@ const styles = StyleSheet.create({
     borderColor: config.css.color.line
   }
 })
-
-function mapStateToProps(store) {
-  const { readPlatform } = store;
-  return {
-    readPlatform
-  }
-}
-
-export default connect(mapStateToProps)(ReadPlatform)

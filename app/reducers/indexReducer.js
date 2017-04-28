@@ -7,7 +7,6 @@
 'use strict'
 
 import {combineReducers} from 'redux'
-import readPlatform from './readPlatformReducer'
 import charts from './chartsReducer'
 import bookList from './bookListReducer'
 import categoryList from './categoryListReducer'
@@ -18,7 +17,6 @@ import bookCommunity from './bookCommunityReducer'
 import search from './searchReducer'
 
 const rootReducer = combineReducers({
-  readPlatform,
   charts,
   bookList,
   categoryList,
