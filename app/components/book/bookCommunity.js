@@ -23,6 +23,7 @@ import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view
 
 import TabBarOnlyText from '../../weight/TabBarOnlyText'
 import TagsGroup from '../../weight/tagsGroup'
+import ToolBar from '../../weight/toolBar'
 import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
@@ -78,7 +79,7 @@ export default class BookCommunity extends Component {
             onPress={() => this._changeTag(element.sort)}>
             <Icon 
               name= {iconName}
-              style= {styles.headerIcon}
+              style= {styles.icon}
               size={25}
               color={config.css.color.appBlack}/>
             <Text style={styles.itemTitle}>{element.name}</Text>
@@ -92,21 +93,11 @@ export default class BookCommunity extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon 
-            name='ios-arrow-back-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}
-            onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>主题书单</Text>
-          <Icon 
-            name='ios-stats-outline'
-            style= {styles.headerIcon}
-            size={25}
-            onPress={this._showTags.bind(this)}
-            color={config.css.color.appBlack}/>
-        </View>
+        <ToolBar 
+          leftClick={this._back.bind(this)}
+          title='主题书单'
+          rightIcon='ios-stats-outline'
+          rightClick={this._showTags.bind(this)}/>
         <ScrollableTabView
           scrollWithoutAnimation={true}
           tabBarPosition={'top'}
@@ -148,22 +139,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: config.css.color.appBackground
   },
-  header: {
-    height: config.css.headerHeight,
-    paddingTop: config.css.statusBarHeight,
-    backgroundColor: config.css.color.appMainColor,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  headerIcon: {
+  icon: {
     marginLeft: 14,
     marginRight: 14
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: config.css.fontColor.title,
-    fontSize: config.css.fontSize.appTitle
   },
   modal: {
     flex: 1, 

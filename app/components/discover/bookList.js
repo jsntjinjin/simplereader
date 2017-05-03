@@ -29,6 +29,7 @@ import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import BookListTab from './bookListTab'
 import request from '../../utils/httpUtil'
+import ToolBar from '../../weight/toolBar'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 var tabNames = ['本周最热', '最新发布', '最多收藏']
@@ -91,21 +92,11 @@ export default class BookList extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon 
-            name='ios-arrow-back-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}
-            onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>主题书单</Text>
-          <Icon 
-            name='ios-stats-outline'
-            style= {styles.headerIcon}
-            size={25}
-            onPress={this._showTags.bind(this)}
-            color={config.css.color.appBlack}/>
-        </View>
+        <ToolBar 
+          leftClick={this._back.bind(this)}
+          title='主题书单'
+          rightIcon='ios-stats-outline'
+          rightClick={this._showTags.bind(this)}/>
         <ScrollableTabView
           scrollWithoutAnimation={true}
           tabBarPosition={'top'}
@@ -156,23 +147,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: config.css.color.appBackground
-  },
-  header: {
-    height: config.css.headerHeight,
-    paddingTop: config.css.statusBarHeight,
-    backgroundColor: config.css.color.appMainColor,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  headerIcon: {
-    marginLeft: 14,
-    marginRight: 14
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: config.css.fontColor.title,
-    fontSize: config.css.fontSize.appTitle
   },
   modal: {
     flex: 1, 

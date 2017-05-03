@@ -28,6 +28,7 @@ import BookReviewDetail from './community/bookReviewDetail'
 import StarLevel from '../weight/starLevel'
 import TagsGroup from '../weight/tagsGroup'
 import Loading from '../weight/loading'
+import ToolBar from '../weight/toolBar'
 import request from '../utils/httpUtil'
 import {wordCountFormat, dateFormat} from '../utils/formatUtil'
 import Dimen from '../utils/dimensionsUtil'
@@ -311,20 +312,10 @@ export default class BookDetail extends Component {
   render() {
     return(
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon 
-            name='ios-arrow-back-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}
-            onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>书籍详情</Text>
-          <Icon 
-            name='ios-cloud-download-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}/>
-        </View>
+        <ToolBar 
+          leftClick={this._back.bind(this)}
+          title='书籍详情'
+          rightIcon='ios-cloud-download-outline'/>
         {this.state.bookDetail && this.state.hotReview.length > 0 && this.state.recommendBookList.length > 0 ? 
           <ScrollView 
             style={styles.body}
@@ -433,23 +424,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: config.css.color.appBackground
-  },
-  header: {
-    height: config.css.headerHeight,
-    paddingTop: config.css.statusBarHeight,
-    backgroundColor: config.css.color.appMainColor,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  headerIcon: {
-    marginLeft: 14,
-    marginRight: 14
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: config.css.fontColor.title,
-    fontSize: config.css.fontSize.appTitle
   },
   body: {
     flex: 1

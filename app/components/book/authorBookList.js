@@ -24,6 +24,7 @@ import config from '../../common/config'
 import Dimen from '../../utils/dimensionsUtil'
 import api from '../../common/api'
 import Loading from '../../weight/loading'
+import ToolBar from '../../weight/toolBar'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -94,20 +95,9 @@ export default class AuthorBookList extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon 
-            name='ios-arrow-back-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}
-            onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>{this.props.author}</Text>
-          <Icon 
-            name='ios-cloud-download-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appMainColor}/>
-        </View>
+        <ToolBar 
+          leftClick={this._back.bind(this)}
+          title={this.props.author}/>
         {this.state.isLoading ? 
             <Loading />
           :
@@ -126,23 +116,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: config.css.color.appBackground,
     alignItems: 'stretch'
-  },
-  header: {
-    height: config.css.headerHeight,
-    paddingTop: config.css.statusBarHeight,
-    backgroundColor: config.css.color.appMainColor,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  headerIcon: {
-    marginLeft: 14,
-    marginRight: 14
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: config.css.fontColor.title,
-    fontSize: config.css.fontSize.appTitle
   },
   body: {
     flex: 1

@@ -90,6 +90,7 @@ export default class ReadPlatform extends Component {
         if (data.ok) {
           let _currentChapter = data.chapter.body
           let _arr = this._formatChapter(_currentChapter, num, bookChapter.chapters[num].title)
+          this._updateHistoryBookChapter(this.props.bookId, num)
           this.currentChapter = _arr.length
           if (num + 1 >= bookChapter.chapters.length) {
             this.setState({
@@ -440,6 +441,61 @@ export default class ReadPlatform extends Component {
     )
   }
 
+  renderControlStation() {
+    return (
+      <View style={{position: 'absolute', width: Dimen.window.width, height: Dimen.window.height}}>
+        <View style={[styles.control,{paddingTop: config.css.statusBarHeight}]}>
+          <Icon 
+            name='ios-arrow-back-outline'
+            style= {{marginLeft: 14, flex: 1}}
+            size={25}
+            color={config.css.color.appBlack}
+            onPress={this._back.bind(this)}/>
+          <Text style={styles.controlHeaderTitle} onPress={this._toBookCommunity.bind(this)}>社区</Text>
+          <Text style={styles.controlHeaderTitle} onPress={this._toBookDetail.bind(this)}>简介</Text>
+        </View>
+        <Text 
+          onPress={() => {this.setState({showControlStation: false})}}
+          style={{flex: 1}}>
+        </Text>
+        <View style={[styles.control,{height: 50}]}>
+          <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
+            <Icon 
+              name='ios-settings'
+              style={styles.controlFooterIcon}
+              size={25}
+              color={config.css.color.appBlack}/>
+            <Text style={styles.controlFooterTitle}>设置</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
+            <Icon 
+              name='ios-cloud-download'
+              style={styles.controlFooterIcon}
+              size={25}
+              color={config.css.color.appBlack}/>
+            <Text style={styles.controlFooterTitle}>缓存</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
+            <Icon 
+              name='ios-bookmarks'
+              style={styles.controlFooterIcon}
+              size={25}
+              color={config.css.color.appBlack}/>
+            <Text style={styles.controlFooterTitle}>书签</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.controlFooterItem} onPress={this._showListModal.bind(this)}>
+            <Icon 
+              name='ios-list-box'
+              style={styles.controlFooterIcon}
+              size={25}
+              color={config.css.color.appBlack}/>
+            <Text style={styles.controlFooterTitle}>目录</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -465,56 +521,7 @@ export default class ReadPlatform extends Component {
           }
         </Image>
         {this.state.showControlStation ?
-          <View style={{position: 'absolute', width: Dimen.window.width, height: Dimen.window.height}}>
-            <View style={[styles.control,{paddingTop: config.css.statusBarHeight}]}>
-              <Icon 
-                name='ios-arrow-back-outline'
-                style= {{marginLeft: 14, flex: 1}}
-                size={25}
-                color={config.css.color.appBlack}
-                onPress={this._back.bind(this)}/>
-              <Text style={styles.controlHeaderTitle} onPress={this._toBookCommunity.bind(this)}>社区</Text>
-              <Text style={styles.controlHeaderTitle} onPress={this._toBookDetail.bind(this)}>简介</Text>
-            </View>
-            <Text 
-              onPress={() => {this.setState({showControlStation: false})}}
-              style={{flex: 1}}>
-            </Text>
-            <View style={[styles.control,{height: 50}]}>
-              <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
-                <Icon 
-                  name='ios-settings'
-                  style={styles.controlFooterIcon}
-                  size={25}
-                  color={config.css.color.appBlack}/>
-                <Text style={styles.controlFooterTitle}>设置</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
-                <Icon 
-                  name='ios-cloud-download'
-                  style={styles.controlFooterIcon}
-                  size={25}
-                  color={config.css.color.appBlack}/>
-                <Text style={styles.controlFooterTitle}>缓存</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.controlFooterItem} onPress={this._back.bind(this)}>
-                <Icon 
-                  name='ios-bookmarks'
-                  style={styles.controlFooterIcon}
-                  size={25}
-                  color={config.css.color.appBlack}/>
-                <Text style={styles.controlFooterTitle}>书签</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.controlFooterItem} onPress={this._showListModal.bind(this)}>
-                <Icon 
-                  name='ios-list-box'
-                  style={styles.controlFooterIcon}
-                  size={25}
-                  color={config.css.color.appBlack}/>
-                <Text style={styles.controlFooterTitle}>目录</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          this.renderControlStation()
         :
           null
         }

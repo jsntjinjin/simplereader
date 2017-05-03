@@ -33,6 +33,7 @@ import api from '../../common/api'
 import request from '../../utils/httpUtil'
 import Toast from '../../weight/toast'
 import CategoryDetailTab from './categoryDetailTab'
+import ToolBar from '../../weight/toolBar'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 var tabNames = ["新书", "热门", "口碑", "完结"]
@@ -110,21 +111,11 @@ export default class CategoryDetail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon 
-            name='ios-arrow-back-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}
-            onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>{this.state.minor === '' ? this.props.major: this.state.minor}</Text>
-          <Icon 
-            name='ios-stats-outline'
-            style= {styles.headerIcon}
-            size={25}
-            onPress={this._showChooseBox.bind(this)}
-            color={config.css.color.appBlack}/>
-        </View>
+        <ToolBar 
+          leftClick={this._back.bind(this)}
+          title={this.state.minor === '' ? this.props.major: this.state.minor}
+          rightIcon='ios-stats-outline'
+          rightClick={this._showChooseBox.bind(this)}/>
         <ScrollableTabView
           scrollWithoutAnimation={true}
           tabBarPosition={'top'}
@@ -182,23 +173,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: config.css.color.appBackground
-  },
-  header: {
-    height: config.css.headerHeight,
-    paddingTop: config.css.statusBarHeight,
-    backgroundColor: config.css.color.appMainColor,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  headerIcon: {
-    marginLeft: 14,
-    marginRight: 14
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: config.css.fontColor.title,
-    fontSize: config.css.fontSize.appTitle
   },
   modal: {
     flex: 1, 

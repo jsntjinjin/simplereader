@@ -31,6 +31,7 @@ import {bookReviewDetail,
 } from '../../actions/bookReviewAction'
 import Loading from '../../weight/loading'
 import LoadingMore from '../../weight/loadingMore'
+import ToolBar from '../../weight/toolBar'
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
@@ -229,15 +230,9 @@ class BookReviewDetail extends Component {
     const {bookReview} = this.props
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Icon 
-            name='ios-arrow-back-outline'
-            style= {styles.headerIcon}
-            size={25}
-            color={config.css.color.appBlack}
-            onPress={this._back.bind(this)}/>
-          <Text style={styles.headerText}>详情</Text>
-        </View>
+        <ToolBar 
+          leftClick={this._back.bind(this)}
+          title='详情'/>
         {bookReview.isLoadingBookReviewCommentList ? 
             <Loading />
           :
@@ -259,23 +254,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: config.css.color.appBackground
-  },
-  header: {
-    height: config.css.headerHeight,
-    paddingTop: config.css.statusBarHeight,
-    backgroundColor: config.css.color.appMainColor,
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  headerIcon: {
-    marginLeft: 14,
-    marginRight: 14
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    color: config.css.fontColor.title,
-    fontSize: config.css.fontSize.appTitle
   },
   body: {
     flex: 1
