@@ -8,11 +8,10 @@ import React, { Component } from 'react'
 import {
   View,
   BackAndroid,
-  Navigator,
   AsyncStorage,
   StatusBar
 } from 'react-native'
-
+import {Navigator} from 'react-native-deprecated-custom-components';
 import Storage from 'react-native-storage'
 import Realm from 'realm'
 
